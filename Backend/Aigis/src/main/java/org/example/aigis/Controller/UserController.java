@@ -11,8 +11,10 @@ import org.example.aigis.Mapper.UserMapper;
 import org.example.aigis.Model.ApiResponse;
 import org.example.aigis.Model.User;
 import lombok.RequiredArgsConstructor;
+import org.example.aigis.Service.UserVerification;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -26,6 +28,7 @@ public class UserController {
     private final UserDAO userDAO;
     private final UserMapper userMapper;
     private final AuthenticationService authenticationService;
+    private final UserVerification userVerification;
 
     @PreAuthorize("hasAuthority('ADMIN')")
     @GetMapping
@@ -54,13 +57,21 @@ public class UserController {
 
     // TODO: MAKE THIS CHECK IF THE USER USER CALLING THIS IS ACTUALLY THE USER THEY ARE TRYING TO EDIT
     @PutMapping(path = {"/{id}"})
-    public ApiResponse<UserResponseDTO> editUser(@PathVariable("id") UUID id, @RequestBody UserEditDTO userEditDTO) {
+    public ApiResponse<UserResponseDTO> editUser(
+            @PathVariable("id") UUID id,
+            @RequestBody UserEditDTO userEditDTO,
+            Authentication authentication
+    ) {
         Optional<User> foundUser = userDAO.findById(id);
         if(foundUser.isEmpty()) {
             return new ApiResponse<>("User not found", HttpStatus.NOT_FOUND);
         }
 
         User user = foundUser.get();
+
+        if (!userVerification.verifyUser(authentication, user.getUsernameUnique())) {
+            return new ApiResponse<>("You are not authorized to edit this user", HttpStatus.UNAUTHORIZED);
+        }
 
         if (userEditDTO.getUsername() != null) {
             user.setUsername(userEditDTO.getUsername());

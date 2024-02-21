@@ -36,7 +36,7 @@ public class AuthenticationService {
                 .build();
 
         userDAO.save(user);
-        String token = jwtService.generateToken(Map.of("role", user.getRole()), user.getId() );
+        String token = jwtService.generateToken(Map.of("id", user.getId()), user.getId() );
         return Optional.of(token);
     }
 
@@ -44,7 +44,7 @@ public class AuthenticationService {
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, password));
 
         User user = userDAO.loadUserByUsername(username);
-        return jwtService.generateToken(Map.of("role", user.getRole()), user.getId());
+        return jwtService.generateToken(Map.of("id", user.getId()), user.getId());
     }
 
     public boolean isValidToken(String token) {
