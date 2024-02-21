@@ -42,6 +42,6 @@ public class UserDAO implements UserDetailsService {
 
     @Override
     public User loadUserByUsername(String username) throws UsernameNotFoundException {
-        return userRepository.findByUsername(username).orElseThrow();
+        return userRepository.findByUsernameUnique(username).orElseThrow();
     }
 }
