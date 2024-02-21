@@ -36,6 +36,11 @@ public class User implements UserDetails {
 
     private String about;
 
+    @OneToMany
+    @JoinColumn(name = "post_user")
+    private List<Post> posts;
+
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of(new SimpleGrantedAuthority(role.name()));
