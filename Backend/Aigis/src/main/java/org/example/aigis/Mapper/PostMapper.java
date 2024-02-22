@@ -23,6 +23,7 @@ public class PostMapper {
                 .content(post.getContent())
                 .likes(post.getLikes())
                 .date(post.getDate())
+                .id(post.getId())
                 .build();
     }
 }
