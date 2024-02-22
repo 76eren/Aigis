@@ -55,7 +55,6 @@ public class UserController {
         return new ApiResponse<>(new AuthResponseDTO(token));
     }
 
-    // TODO: MAKE THIS CHECK IF THE USER USER CALLING THIS IS ACTUALLY THE USER THEY ARE TRYING TO EDIT
     @PutMapping(path = {"/{id}"})
     public ApiResponse<UserResponseDTO> editUser(
             @PathVariable("id") UUID id,
