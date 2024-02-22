@@ -47,9 +47,10 @@ public class PostController {
         }
 
         Image image = null;
-        if (postCreateDTO.getImageExtention() != null && multipartFile != null) {
+        if (multipartFile != null) {
+            String extention = multipartFile.getOriginalFilename().split("\\.")[1];
             for (SupportedExtensions i : SupportedExtensions.values()) {
-                if (i.getExtension().substring(1).equalsIgnoreCase(postCreateDTO.getImageExtention())) {
+                if (i.getExtension().substring(1).equalsIgnoreCase(extention)) {
                     image = imageDao.saveImage(multipartFile, i);
                     break;
                 }

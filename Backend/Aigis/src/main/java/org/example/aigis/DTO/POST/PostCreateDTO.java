@@ -12,5 +12,4 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class PostCreateDTO {
     private String content;
-    private String imageExtention;
 }
