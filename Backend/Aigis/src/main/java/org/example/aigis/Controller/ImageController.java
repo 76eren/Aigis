@@ -21,16 +21,16 @@ public class ImageController {
     private final ImageDao imageDao;
 
     @GetMapping(value = "/{id}")
-    public ApiResponse<byte[]> getImageById(@PathVariable("id") UUID id) {
+    public ResponseEntity<byte[]> getImageById(@PathVariable("id") UUID id) {
         try {
             byte[] imageBytes = imageDao.getImageById(id);
             if (imageBytes == null) {
-                return new ApiResponse<>(null, null);
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
             }
-            return new ApiResponse<>(imageBytes, null);
+            return ResponseEntity.ok().contentType(MediaType.IMAGE_JPEG).body(imageBytes);
         }
         catch (Exception e) {
-            return new ApiResponse<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
 }

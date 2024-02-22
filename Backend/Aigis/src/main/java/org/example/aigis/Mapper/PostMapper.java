@@ -24,6 +24,7 @@ public class PostMapper {
                 .likes(post.getLikes())
                 .date(post.getDate())
                 .id(post.getId())
+                .imageId(post.getImage().getId())
                 .build();
     }
 }
