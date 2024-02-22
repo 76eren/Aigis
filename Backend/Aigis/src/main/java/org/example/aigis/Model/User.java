@@ -40,6 +40,9 @@ public class User implements UserDetails {
     @JoinColumn(name = "post_user")
     private List<Post> posts;
 
+    @ManyToOne
+    @JoinColumn(name = "pfp_user")
+    private Image profilePicture;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
