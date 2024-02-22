@@ -4,6 +4,7 @@ package org.example.aigis.Model;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.Date;
 import java.util.UUID;
 
 @Data
@@ -22,4 +23,8 @@ public class Post {
     @ManyToOne
     @JoinColumn(name = "post_user")
     private User user;
+
+    private int likes = 0;
+
+    private long date;
 }

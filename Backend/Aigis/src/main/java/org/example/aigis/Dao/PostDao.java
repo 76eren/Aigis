@@ -24,13 +24,15 @@ public class PostDao {
     public ApiResponse<PostCreateDTO> createPost(String id, PostCreateDTO postCreateDTO) {
         Post post = Post.builder()
                 .content(postCreateDTO.getContent())
+                .likes(0)
+                .date(System.currentTimeMillis())
                 .build();
 
         UUID myId = UUID.fromString(id);
         Optional<User> user = this.userDAO.findById(myId);
         if (user.isPresent()) {
             post.setUser(this.userDAO.findById(myId).get());
-            return new ApiResponse<>(postMapper.fromEntity(postRepository.save(post)), "Post created", HttpStatus.CREATED);
+            return new ApiResponse<>(postMapper.fromEntityToPostCreateDto(postRepository.save(post)), "Post created", HttpStatus.CREATED);
         }
         return new ApiResponse<>(null, "An unknown error has occured", HttpStatus.BAD_REQUEST);
     }
