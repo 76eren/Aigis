@@ -29,20 +29,20 @@ public class PostController {
     private final PostMapper postMapper;
     private final ImageDao imageDao;
 
-    @PostMapping(value = "/create/{id}", consumes = "multipart/form-data")
+    @PostMapping(value = "/create/{usernameUnique}", consumes = "multipart/form-data")
     public ApiResponse<PostCreateDTO> createPost(
-            @PathVariable String id,
+            @PathVariable String usernameUnique,
             @RequestParam("post") String postCreateDTOStr,
             @RequestParam(value = "image", required = false) MultipartFile multipartFile,
             Authentication authentication) throws IOException {
 
         PostCreateDTO postCreateDTO = new ObjectMapper().readValue(postCreateDTOStr, PostCreateDTO.class);
-        Optional<User> user = this.userDAO.findById(UUID.fromString(id));
+        Optional<User> user = this.userDAO.findByUsernameUnique(usernameUnique);
         if (user.isEmpty()) {
             return new ApiResponse<>(null, "User not found", HttpStatus.NOT_FOUND);
         }
 
-        if (!userVerification.verifyUser(authentication, this.userDAO.findById(UUID.fromString(id)).get().getUsernameUnique())) {
+        if (!userVerification.verifyUser(authentication, usernameUnique)) {
             return new ApiResponse<>(null, "Error", HttpStatus.BAD_REQUEST);
         }
 
@@ -50,13 +50,12 @@ public class PostController {
         if (postCreateDTO.getImageExtention() != null && multipartFile != null) {
             for (SupportedExtensions i : SupportedExtensions.values()) {
                 if (i.getExtension().substring(1).equalsIgnoreCase(postCreateDTO.getImageExtention())) {
-                    System.out.println("XDDDDDDDDDD");
                     image = imageDao.saveImage(multipartFile, i);
                     break;
                 }
             }
         }
-        return postDao.createPost(id, postCreateDTO, image);
+        return postDao.createPost(String.valueOf(user.get().getId()), postCreateDTO, image);
     }
 
     @GetMapping(value = "/{usernameUnique}")
