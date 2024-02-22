@@ -18,4 +18,5 @@ public class UserResponseDTO {
     private String usernameUnique;
     private String about;
     private Role role;
+    private String profilePictureId;
 }

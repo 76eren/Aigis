@@ -49,6 +49,16 @@ public class UserController {
         return new ApiResponse<>(res);
     }
 
+    @GetMapping(value = "/{usernameUnique}")
+    public ApiResponse<UserResponseDTO> getUserByUsernameUnique(
+            @PathVariable String usernameUnique) {
+        Optional<User> user = userDAO.findByUsernameUnique(usernameUnique);
+        if (user.isEmpty()) {
+            return new ApiResponse<>("User not found", HttpStatus.NOT_FOUND);
+        }
+        return new ApiResponse<>(userMapper.fromEntity(user.get()));
+    }
+
     @PostMapping(value = "/register")
     public ApiResponse<AuthResponseDTO> register(@RequestBody AuthRegisterDTO loginDTO) {
         Optional<String> tokenResponse = authenticationService.register(loginDTO.getUsernameUnique(), loginDTO.getUsername(), loginDTO.getPassword(), loginDTO.getAbout());
@@ -61,15 +71,15 @@ public class UserController {
         return new ApiResponse<>(new AuthResponseDTO(token));
     }
 
-    @PatchMapping(value = "/{id}")
+    @PatchMapping(value = "/{usernameUnique}")
     public ApiResponse<?> assignProfilePicture(
             @RequestParam(value = "image", required = true) MultipartFile multipartFile,
-            @PathVariable UUID id,
+            @PathVariable String usernameUnique,
             Authentication authentication) throws IOException {
 
         String imageExtention = multipartFile.getOriginalFilename().split("\\.")[1];
 
-        Optional<User> user = userDAO.findById(id);
+        Optional<User> user = userDAO.findByUsernameUnique(usernameUnique);
         if (user.isEmpty()) {
             return new ApiResponse<>("User not found", HttpStatus.NOT_FOUND);
         }
