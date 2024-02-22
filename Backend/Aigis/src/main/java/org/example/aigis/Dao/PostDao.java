@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.example.aigis.DTO.POST.PostCreateDTO;
 import org.example.aigis.Mapper.PostMapper;
 import org.example.aigis.Model.ApiResponse;
+import org.example.aigis.Model.Image;
 import org.example.aigis.Model.Post;
 import org.example.aigis.Model.User;
 import org.example.aigis.Repository.PostRepository;
@@ -20,13 +21,17 @@ public class PostDao {
     private final PostRepository postRepository;
     private final UserDAO userDAO;
     private final PostMapper postMapper;
+    private final ImageDao imageDao;
 
-    public ApiResponse<PostCreateDTO> createPost(String id, PostCreateDTO postCreateDTO) {
+    public ApiResponse<PostCreateDTO> createPost(String id, PostCreateDTO postCreateDTO, Image image) {
         Post post = Post.builder()
                 .content(postCreateDTO.getContent())
                 .likes(0)
                 .date(System.currentTimeMillis())
+                .image(image)
                 .build();
+
+
 
         UUID myId = UUID.fromString(id);
         Optional<User> user = this.userDAO.findById(myId);

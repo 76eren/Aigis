@@ -27,4 +27,8 @@ public class Post {
     private int likes = 0;
 
     private long date;
+
+    @ManyToOne
+    @JoinColumn(name = "post_image")
+    private Image image;
 }

@@ -1,20 +1,22 @@
 package org.example.aigis.Controller;
 
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.example.aigis.DTO.POST.PostCreateDTO;
 import org.example.aigis.DTO.POST.PostGetDTO;
+import org.example.aigis.Dao.ImageDao;
 import org.example.aigis.Dao.PostDao;
 import org.example.aigis.Dao.UserDAO;
 import org.example.aigis.Mapper.PostMapper;
-import org.example.aigis.Model.ApiResponse;
-import org.example.aigis.Model.Post;
-import org.example.aigis.Model.User;
+import org.example.aigis.Model.*;
 import org.example.aigis.Service.UserVerification;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.*;
 
 @RestController
@@ -25,20 +27,36 @@ public class PostController {
     private final UserVerification userVerification;
     private final UserDAO userDAO;
     private final PostMapper postMapper;
+    private final ImageDao imageDao;
 
-    @PostMapping(value = "/create/{id}")
-    public ApiResponse<PostCreateDTO> createPost(@PathVariable String id, @RequestBody PostCreateDTO postCreateDTO, Authentication authentication) {
-        Optional<User> user = this.userDAO.findById(UUID.fromString(id));
+    @PostMapping(value = "/create/{usernameUnique}", consumes = "multipart/form-data")
+    public ApiResponse<PostCreateDTO> createPost(
+            @PathVariable String usernameUnique,
+            @RequestParam("post") String postCreateDTOStr,
+            @RequestParam(value = "image", required = false) MultipartFile multipartFile,
+            Authentication authentication) throws IOException {
+
+        PostCreateDTO postCreateDTO = new ObjectMapper().readValue(postCreateDTOStr, PostCreateDTO.class);
+        Optional<User> user = this.userDAO.findByUsernameUnique(usernameUnique);
         if (user.isEmpty()) {
             return new ApiResponse<>(null, "User not found", HttpStatus.NOT_FOUND);
         }
 
-
-        if (!userVerification.verifyUser(authentication, this.userDAO.findById(UUID.fromString(id)).get().getUsernameUnique())) {
+        if (!userVerification.verifyUser(authentication, usernameUnique)) {
             return new ApiResponse<>(null, "Error", HttpStatus.BAD_REQUEST);
         }
 
-        return postDao.createPost(id, postCreateDTO);
+        Image image = null;
+        if (multipartFile != null) {
+            String extention = multipartFile.getOriginalFilename().split("\\.")[1];
+            for (SupportedExtensions i : SupportedExtensions.values()) {
+                if (i.getExtension().substring(1).equalsIgnoreCase(extention)) {
+                    image = imageDao.saveImage(multipartFile, i);
+                    break;
+                }
+            }
+        }
+        return postDao.createPost(String.valueOf(user.get().getId()), postCreateDTO, image);
     }
 
     @GetMapping(value = "/{usernameUnique}")

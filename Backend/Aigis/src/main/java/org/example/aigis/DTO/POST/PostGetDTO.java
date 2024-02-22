@@ -17,4 +17,5 @@ public class PostGetDTO {
     private String content;
     private int likes;
     private long date;
+    private UUID imageId;
 }
