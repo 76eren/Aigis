@@ -1,0 +1,34 @@
+.nav {
+  position: sticky;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 60px;
+  top: 0;
+}
+
+.nav {
+  background: #332222;
+  &__item {
+    display: inline-block;
+    margin: 0px 30px;
+    a {
+      text-decoration: none;
+      color: white;
+      &:visited {
+        color: white;
+      }
+    }
+  }
+}
+
+.nav__item:hover {
+  background-color: black;
+  border: 1px solid white;
+}
+
+.nav__item {
+  text-decoration: none;
+  color: white;
+}
+
