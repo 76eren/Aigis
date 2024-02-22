@@ -57,4 +57,19 @@ public class PostController {
         return new ApiResponse<>(postsGet, "Posts", HttpStatus.OK);
     }
 
+    @DeleteMapping(value = "/delete/{id}")
+    public ApiResponse<?> deletePost(@PathVariable String id, Authentication authentication) {
+        Optional<Post> post = this.postDao.findById(UUID.fromString(id));
+        if (post.isEmpty()) {
+            return new ApiResponse<>(null, "Post not found", HttpStatus.NOT_FOUND);
+        }
+
+        if (!userVerification.verifyUser(authentication, post.get().getUser().getUsernameUnique())) {
+            return new ApiResponse<>(null, "Error", HttpStatus.BAD_REQUEST);
+        }
+
+        postDao.deletePost(post.get());
+        return new ApiResponse<>(null, "Post deleted", HttpStatus.OK);
+    }
+
 }

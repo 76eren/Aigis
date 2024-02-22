@@ -36,4 +36,14 @@ public class PostDao {
         }
         return new ApiResponse<>(null, "An unknown error has occured", HttpStatus.BAD_REQUEST);
     }
+
+    public Optional<Post> findById(UUID uuid) {
+        return this.postRepository.findById(uuid);
+    }
+
+    public ApiResponse<?> deletePost(Post post) {
+        this.postRepository.delete(post);
+        return new ApiResponse<>(null, "Post deleted", HttpStatus.OK);
+
+    }
 }
