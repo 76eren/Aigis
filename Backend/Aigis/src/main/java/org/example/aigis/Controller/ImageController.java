@@ -2,8 +2,11 @@ package org.example.aigis.Controller;
 
 
 import lombok.RequiredArgsConstructor;
+import org.example.aigis.DTO.Image.ImageGetDTO;
 import org.example.aigis.Dao.ImageDao;
+import org.example.aigis.Mapper.ImageMapper;
 import org.example.aigis.Model.ApiResponse;
+import org.example.aigis.Model.Image;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -19,18 +22,21 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class ImageController {
     private final ImageDao imageDao;
+    private final ImageMapper imageMapper;
 
     @GetMapping(value = "/{id}")
-    public ResponseEntity<byte[]> getImageById(@PathVariable("id") UUID id) {
+    public ApiResponse<ImageGetDTO> getImageById(@PathVariable("id") UUID id) {
         try {
             byte[] imageBytes = imageDao.getImageById(id);
+            Image image = imageDao.getImageDetailsById(id);
+            ImageGetDTO imageGetDTO = imageMapper.toImageDetailGetDTO(image, imageBytes);
             if (imageBytes == null) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+                return new ApiResponse<>(null, HttpStatus.NOT_FOUND);
             }
-            return ResponseEntity.ok().contentType(MediaType.IMAGE_JPEG).body(imageBytes);
+            return new ApiResponse<>(imageGetDTO);
         }
         catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+            return new ApiResponse<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 }

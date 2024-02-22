@@ -47,5 +47,9 @@ public class ImageDao {
         return imageRepository.save(image);
 
     }
+
+    public Image getImageDetailsById(UUID id) {
+        return imageRepository.findById(id).orElse(null);
+    }
 }
 
