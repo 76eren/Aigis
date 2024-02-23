@@ -15,10 +15,22 @@ import {Router} from "@angular/router";
 export class RegisterComponent {
   username: string = "";
   password: string = "";
+  usernameUnique: string = "";
 
   constructor(private apiService: ApiService, private toastr: ToastrService, private router: Router) {}
 
   submitRegister() {
-
+      this.apiService
+          .PostRegister({ username: this.username, password: this.password, usernameUnique: this.usernameUnique })
+          .subscribe({
+              next: (data) => {
+                  this.toastr.success('Register successful', 'Success');
+                  this.router.navigate(['/login']);
+              },
+              error: (error) => {
+                  console.error(error);
+                  this.toastr.error('Unknown error occured', 'Error');
+              },
+          });
   }
 }

@@ -31,8 +31,18 @@ import { AuthService } from './auth.service';
     );
   }
 
-  PostRegister(payload: { usernameUnique: string; password: string }) {
-
+  PostRegister(payload: { usernameUnique: string; password: string, username: string}) {
+      return this.http.post(`${ApiService.API_URL}/user/register`, payload).pipe(
+          map((data) => {
+              return z
+                  .object({
+                      payload: z.object({
+                          token: z.string(),
+                      }),
+                  })
+                  .parse(data);
+          }),
+      );
   }
 
 }

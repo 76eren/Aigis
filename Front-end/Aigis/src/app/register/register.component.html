@@ -2,6 +2,17 @@
   <div class="login-container">
     <h1>Register</h1>
     <form class="login-form" (ngSubmit)="submitRegister()">
+
+      <label for="usernameUnique">User tag</label>
+      <input
+              type="text"
+              id="usernameUnique"
+              name="password"
+              required
+              [(ngModel)]="usernameUnique"
+              placeholder=""
+      />
+
       <label for="username">Username</label>
       <input
         type="text"
