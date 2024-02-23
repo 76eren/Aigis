@@ -15,6 +15,8 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import { ToastrModule } from 'ngx-toastr';
 import { HttpClientModule } from '@angular/common/http';
 import { HashLocationStrategy, LocationStrategy } from '@angular/common';
+import {AuthService} from "./shared/service/auth.service";
+import {ApiService} from "./shared/service/api.service";
 
 @NgModule({
   declarations: [AppComponent],
@@ -33,7 +35,9 @@ import { HashLocationStrategy, LocationStrategy } from '@angular/common';
   ],
   providers: [
     HttpClientModule,
-    { provide: LocationStrategy, useClass: HashLocationStrategy }
+    { provide: LocationStrategy, useClass: HashLocationStrategy },
+    AuthService, ApiService
+
   ],  bootstrap: [AppComponent],
 })
 export class AppModule {}

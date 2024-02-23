@@ -1,0 +1,96 @@
+$border-radius: 1rem;
+
+.main-container {
+  display: flex;
+  flex-direction: row-reverse;
+  justify-content: center;
+  align-items: flex-start;
+  height: 100vh;
+  background-color: #3c3848;
+
+  .image-container {
+    width: 50%;
+    height: 100%;
+    background: url("../../assets/grape-hyacinth-8555017.jpg") no-repeat center;
+    background-size: cover;
+    flex-shrink: 0;
+  }
+
+  .login-container {
+    width: 50%;
+    padding: 0 10%;
+    display: flex;
+    flex-direction: column;
+
+    justify-content: center;
+    height: 100%;
+  }
+
+  .login-form {
+    display: flex;
+    flex-direction: column;
+  }
+
+  button[type="submit"],
+  input {
+    padding: 0.75rem;
+    border-radius: $border-radius;
+    margin-bottom: 1rem;
+  }
+
+  input {
+    background-color: #615972;
+    margin-bottom: 1rem;
+    border: none;
+    color: #ffffff;
+
+    &::placeholder {
+      color: #ffffff;
+      opacity: 0.8;
+    }
+
+    &:focus {
+      outline: none;
+      border-color: #00a2ff;
+    }
+  }
+
+  label {
+    color: white;
+  }
+
+  button {
+    margin-top: 1rem;
+    align-items: center;
+    border: none;
+    border-radius: $border-radius;
+    background-color: #fff;
+    color: black;
+    font-weight: bold;
+    cursor: pointer;
+
+    &:hover {
+      background-color: darken(#00a2ff, 10%);
+    }
+  }
+
+  h1 {
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 1rem;
+    font-size: 3rem;
+  }
+
+  label {
+    margin-left: 1rem;
+    margin-bottom: 0.4rem;
+  }
+
+  @media only screen and (max-width: 720px) {
+    .image-container {
+      display: none;
+    }
+  }
+}
