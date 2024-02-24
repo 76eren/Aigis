@@ -1,5 +1,6 @@
 <nav class="sidenav">
   <ul class="navlist">
+
     <li class="navlist__item">
       <a routerLink="/dashboard">
         <div class="icon-container">
@@ -9,6 +10,14 @@
       </a>
     </li>
 
+    <li class="navlist__item">
+      <a routerLink="/profile">
+        <div class="icon-container">
+          <lucide-icon name="user" class="sidenav__item" />
+          <span class="nav-label">Profile</span>
+        </div>
+      </a>
+    </li>
 
     <li class="navlist__item bottom">
       <button class="signout-button" (click)="signout()">

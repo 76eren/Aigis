@@ -4,6 +4,7 @@ import {AppLayoutComponent} from "./app-layout/app-layout.component";
 import {LoginComponent} from "./login/login.component";
 import {loginGuard} from "./shared/guard/login.guard";
 import {RegisterComponent} from "./register/register.component";
+import {ProfileComponent} from "./profile/profile.component";
 
 export const routes: Routes = [
   {
@@ -29,6 +30,10 @@ export const routes: Routes = [
         redirectTo: 'dashboard',
         pathMatch: 'full',
       },
+      {
+        path: 'profile',
+        component: ProfileComponent,
+      }
     ],
   },
 ];
