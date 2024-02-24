@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {Router, RouterModule} from '@angular/router';
 import { LucideAngularModule } from 'lucide-angular';
+import {AuthService} from "../shared/service/auth.service";
 
 
 @Component({
@@ -13,4 +14,9 @@ import { LucideAngularModule } from 'lucide-angular';
 })
 export class NavbarComponent {
 
+  constructor(private authService: AuthService) {}
+
+  signout() {
+    this.authService.signout();
+  }
 }

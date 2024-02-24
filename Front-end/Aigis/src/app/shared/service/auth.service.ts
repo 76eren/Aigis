@@ -79,4 +79,9 @@ export class AuthService {
     return !!token;
   }
 
+  public signout(): void {
+    sessionStorage.removeItem('token');
+    this.router.navigate(['/login']);
+  }
+
 }
