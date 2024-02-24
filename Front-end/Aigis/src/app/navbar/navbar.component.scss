@@ -1,3 +1,5 @@
+$navbar__height: 60px;
+
 .nav {
   position: fixed;
   top: 0;
@@ -5,7 +7,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 60px;
+  height: $navbar__height;
   background: #332222;
   z-index: 1000;
 }
