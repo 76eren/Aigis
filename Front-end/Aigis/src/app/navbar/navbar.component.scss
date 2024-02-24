@@ -1,34 +1,109 @@
-$navbar__height: 60px;
-
-.nav {
-  position: fixed;
+.sidenav {
+  position: sticky;
   top: 0;
-  width: 100%;
+  padding: 48px 14px;
+  height: 100vh;
+  box-sizing: border-box;
+  background-color: var(--color-dark-gray);
   display: flex;
-  justify-content: center;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.navlist {
+  display: flex;
+  flex-direction: column;
   align-items: center;
-  height: $navbar__height;
-  background: #332222;
-  z-index: 1000;
+  list-style: none;
+  gap: 32px;
+  margin: 0;
+  padding: 0;
+  height: 100%;
 }
 
-.nav__item {
-  display: inline-block;
-  margin: 0px 30px;
+.navlist__item:has(.signout-button) {
+  display: block;
+
+  .signout-button {
+    cursor: pointer;
+    background: transparent;
+    border: 0px;
+  }
+}
+
+.navlist__item.bottom {
+  margin-top: auto;
+}
+
+.icon-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.sidenav__item {
+  color: white;
   text-decoration: none;
-  color: white;
 }
 
-.nav__item a {
+.nav-label {
+  color: white;
+  font-size: 12px;
+  text-align: center;
+  margin-top: 8px;
   text-decoration: none;
-  color: white;
 }
 
-.nav__item a:visited {
-  color: white;
+.navlist__item a {
+  text-decoration: none;
 }
 
-.nav__item:hover {
-  background-color: black;
-  border: 1px solid white;
+@media only screen and (max-width: 720px) {
+  .sidenav {
+    position: fixed;
+
+    width: 100%;
+    box-sizing: border-box;
+    height: min-content;
+    bottom: 0;
+    z-index: 1;
+    top: unset;
+    padding: 16px 0px;
+  }
+
+  .navlist {
+    height: 100%;
+    justify-items: center;
+    align-items: center;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 32px;
+
+    .navlist__item {
+      flex-grow: 1;
+      display: block;
+      box-sizing: border-box;
+
+      & > * {
+        display: block;
+        height: 100%;
+        width: 100%;
+        padding: 16px 0px;
+
+        .nav-label {
+          margin-top: 0;
+        }
+      }
+    }
+
+    .navlist__item:last-child {
+      margin-top: 0;
+    }
+  }
+}
+
+@media only screen and (max-width: 510px) {
+  .sidenav .navlist {
+    gap: 0;
+  }
 }
