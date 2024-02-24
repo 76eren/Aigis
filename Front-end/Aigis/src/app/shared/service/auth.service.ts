@@ -50,7 +50,6 @@ export class AuthService {
     this.http.get(ApiService.API_URL + `/auth/validate/${token}`, {observe: 'response', responseType : 'text'}).subscribe(
       response => {
         const responseBody = response.body ? response.body.toString() : '';
-        console.log("body is: " + responseBody)
         if (responseBody.includes('invalid')) {
           isValid = false;
         }
@@ -66,9 +65,6 @@ export class AuthService {
           this.toastr.error('Your session has expired or is invalid. Please log in again.', 'Session Expired');
           this.router.navigate(['/login']);
         }
-        else {
-          console.log("Token is valid!")
-        }
 
       },
     );
@@ -82,6 +78,28 @@ export class AuthService {
   public signout(): void {
     sessionStorage.removeItem('token');
     this.router.navigate(['/login']);
+  }
+
+  public getId() {
+    const token = sessionStorage.getItem('token');
+    if (!token) return '';
+
+    try {
+      // Split the token into parts
+      const parts = token.split('.');
+      if (parts.length !== 3) {
+        throw new Error('Invalid JWT token');
+      }
+      const payload = parts[1];
+      const decodedPayload = atob(payload.replace(/-/g, '+').replace(/_/g, '/'));
+      const payloadObj = JSON.parse(decodedPayload);
+      return payloadObj.sub;
+    }
+    catch (error) {
+      console.error('Failed to decode JWT:', error);
+      return null;
+    }
+
   }
 
 }

@@ -4,6 +4,7 @@ import { Observable, OperatorFunction } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
 import { z } from 'zod';
 import { AuthService } from './auth.service';
+import {UserModel} from "../../models/user.model";
 
 
 @Injectable({
@@ -43,6 +44,35 @@ import { AuthService } from './auth.service';
                   .parse(data);
           }),
       );
+  }
+
+  GetUserById(id: string): Observable<UserModel> {
+    return this.http.get(`${ApiService.API_URL}/user/${id}`).pipe(
+      map((data) => {
+        return z
+          .object({
+            payload: z.object({
+              id: z.string(),
+              username: z.string(),
+              usernameUnique: z.string(),
+              about: z.string().nullable(),
+              role: z.string(),
+              profilePictureId: z.string().nullable(),
+            }),
+          })
+          .parse(data);
+      }),
+      map((data) => {
+        return new UserModel(
+          data.payload.id,
+          data.payload.username,
+          data.payload.usernameUnique,
+          data.payload.about || '',
+          data.payload.role,
+          data.payload.profilePictureId || ''
+        );
+      })
+    );
   }
 
 }
