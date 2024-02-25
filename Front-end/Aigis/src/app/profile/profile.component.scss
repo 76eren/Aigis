@@ -1,18 +1,18 @@
 .container {
   display: flex;
+  flex-direction: column;
 
   .banner {
-    height: 1200px;
-    width: 100%;
+    display: flex;
     padding: 20px 10%;
   }
 
   .image {
     width: 100%;
-    height: 20%;
     background: url("../../assets/jorg-angeli-CAMwIxYk5Xg-unsplash.jpg") no-repeat center;
     background-size: cover;
     flex-shrink: 0;
+    height: 250px
   }
 
   .profile-picture {
@@ -28,6 +28,10 @@
     border: 1px solid black;
   }
 
+  .about {
+    display: flex;
+    flex-direction: column;
+  }
 }
 
 @media only screen and (max-width: 720px) {
@@ -35,4 +39,3 @@
     padding: 0 0;
   }
 }
-
