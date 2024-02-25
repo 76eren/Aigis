@@ -49,10 +49,25 @@ public class UserController {
         return new ApiResponse<>(res);
     }
 
-    @GetMapping(value = "/{usernameUnique}")
-    public ApiResponse<UserResponseDTO> getUserByUsernameUnique(
-            @PathVariable String usernameUnique) {
-        Optional<User> user = userDAO.findByUsernameUnique(usernameUnique);
+    @GetMapping(value = "/{userIdentifier}")
+    public ApiResponse<UserResponseDTO> getUsernameByIdentifier(
+            @PathVariable String userIdentifier) {
+
+        // We can get the user by both @ and UUID
+        boolean isUUID = false;
+        try{
+            UUID uuid = UUID.fromString(userIdentifier);
+            isUUID = true;
+        } catch (IllegalArgumentException ignored){}
+
+        Optional<User> user;
+        if (isUUID) {
+            user = userDAO.findById(UUID.fromString(userIdentifier));
+        }
+        else {
+            user = userDAO.findByUsernameUnique(userIdentifier);
+        }
+
         if (user.isEmpty()) {
             return new ApiResponse<>("User not found", HttpStatus.NOT_FOUND);
         }
