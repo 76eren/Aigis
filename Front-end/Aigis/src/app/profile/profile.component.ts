@@ -17,7 +17,9 @@ export class ProfileComponent {
   private routeSub: Subscription = new Subscription();
   private id?: string;
   private isViewingOwnProfile?: boolean;
-  private user?: UserModel;
+
+  public user?: UserModel;
+  public profilePicture: string = "";
 
   constructor(private apiService: ApiService, private route: ActivatedRoute, private authService: AuthService) {}
 
@@ -30,7 +32,6 @@ export class ProfileComponent {
       // This means that the user is trying to view their own profile
       this.isViewingOwnProfile = true;
       this.id = this.authService.getId();
-      console.log(this.id)
 
     }
     else {
@@ -47,6 +48,16 @@ export class ProfileComponent {
 
     this.apiService.GetUserById(this.id).subscribe((data) => {
       this.user = data;
+      console.log(data);
+
+      if (this.user.profilePictureId != null && this.user.profilePictureId != "") {
+        this.profilePicture = `http://localhost:8080/api/v1/image/direct/${this.user.profilePictureId}`;
+        console.log(this.profilePicture);
+
+      }
+      else {
+        this.profilePicture = "../../assets/default-pfp.jpg";
+      }
 
     });
   }

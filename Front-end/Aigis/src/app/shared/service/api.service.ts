@@ -67,12 +67,15 @@ import {UserModel} from "../../models/user.model";
           data.payload.id,
           data.payload.username,
           data.payload.usernameUnique,
-          data.payload.about || '',
           data.payload.role,
-          data.payload.profilePictureId || ''
+          data.payload.about || 'This user does not have a biography yet',
+        data.payload.profilePictureId || ''
         );
       })
     );
   }
 
+  getImage(profilePictureId: String) {
+
+  }
 }

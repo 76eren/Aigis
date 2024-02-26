@@ -1,12 +1,14 @@
 <div class="container">
   <div class="banner">
     <div class="image">
-      <div class="profile-picture">
+      <div class="profile-picture" [style.background-image]="'url(' + profilePicture + ')'">
       </div>
     </div>
   </div>
   <div class="about">
-
+    <h1 class="one">{{user?.username}}</h1>
+    <p class="two">&commat;{{user?.usernameUnique}}</p>
+    <p class="bio">{{user?.about}}</p>
   </div>
 
 </div>

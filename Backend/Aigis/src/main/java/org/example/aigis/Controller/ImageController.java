@@ -39,4 +39,18 @@ public class ImageController {
             return new ApiResponse<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
+    @GetMapping(value = "/direct/{id}")
+    public ResponseEntity<byte[]> getImageDirectlyById(@PathVariable("id") UUID id) {
+        try {
+            byte[] imageBytes = imageDao.getImageById(id);
+            if (imageBytes == null) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+            }
+            return ResponseEntity.ok().contentType(MediaType.IMAGE_JPEG).body(imageBytes);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
 }
