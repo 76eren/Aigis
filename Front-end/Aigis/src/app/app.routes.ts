@@ -5,6 +5,7 @@ import {LoginComponent} from "./login/login.component";
 import {loginGuard} from "./shared/guard/login.guard";
 import {RegisterComponent} from "./register/register.component";
 import {ProfileComponent} from "./profile/profile.component";
+import {NotLoginGuard} from "./shared/guard/not-login.guard";
 
 export const routes: Routes = [
   {
@@ -24,6 +25,7 @@ export const routes: Routes = [
       {
         path: 'dashboard',
         component: DashboardComponent,
+        canActivate: [NotLoginGuard]
       },
       {
         path: '',
@@ -33,10 +35,12 @@ export const routes: Routes = [
       {
         path: 'profile/:id',
         component: ProfileComponent,
+        canActivate: [NotLoginGuard]
       },
       {
         path: 'profile',
         component: ProfileComponent,
+        canActivate: [NotLoginGuard]
       }
 
     ],
