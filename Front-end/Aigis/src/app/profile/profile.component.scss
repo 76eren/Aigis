@@ -1,5 +1,3 @@
-// TODO: This is absolutely not responsive :/
-
 .container {
   display: flex;
   flex-direction: column;
@@ -37,13 +35,14 @@
     display: flex;
     flex-direction: column;
     border: 1px solid black;
-    height: 80px;
+    height: auto;
     width: 80%;
     padding: 20px 0;
     margin: 0 auto;
 
     p, h1 {
       margin: 0;
+      word-wrap: break-word;
     }
 
     .one {
@@ -60,15 +59,30 @@
       display: flex;
       flex-direction: column;
       margin-top: 30px;
+      font-size: calc(10px + 0.5vw);
     }
 
-
+    .one .two .bio {
+      padding: 0 10px;
+    }
   }
 
-}
+  @media only screen and (max-width: 720px) {
+    .banner {
+      padding: 0;
+    }
 
-@media only screen and (max-width: 720px) {
-  .banner {
-    padding: 0 0;
+    .about {
+      width: 90%;
+      padding: 10px;
+
+      .one, .two, .bio {
+        padding: 0 5px;
+      }
+
+      .bio {
+        font-size: calc(12px + 1vw);
+      }
+    }
   }
 }
