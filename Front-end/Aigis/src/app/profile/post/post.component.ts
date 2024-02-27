@@ -18,6 +18,8 @@ export class PostComponent {
   public imageUrl: String = "";
   public hasImage: boolean = true;
 
+  public profilePictureUrl: String = "";
+
   constructor(private datePipe: DatePipe) {}
 
   ngOnInit() {
@@ -25,6 +27,13 @@ export class PostComponent {
       this.imageUrl = `http://localhost:8080/api/v1/image/direct/${this.post?.imageId}`;
     } else {
       this.hasImage = false;
+    }
+
+    if (this.user?.profilePictureId && this.user?.profilePictureId !== '') {
+      this.profilePictureUrl = `http://localhost:8080/api/v1/image/direct/${this.user?.profilePictureId}`;
+    }
+    else {
+      this.profilePictureUrl = '../../assets/default-profile-picture.png';
     }
   }
 
