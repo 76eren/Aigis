@@ -5,6 +5,7 @@ import {ActivatedRoute, Router} from "@angular/router";
 import {Subscription} from "rxjs";
 import {AuthService} from "../shared/service/auth.service";
 import {UserModel} from "../models/user.model";
+import {PostModel} from "../models/post.model";
 
 @Component({
   selector: 'app-profile',
@@ -21,6 +22,8 @@ export class ProfileComponent {
   public user?: UserModel;
   public profilePicture: string = "";
   public userFound: boolean = true;
+
+  public posts: PostModel[] = [];
 
   constructor(private apiService: ApiService, private route: ActivatedRoute, private authService: AuthService) {}
 
@@ -58,6 +61,13 @@ export class ProfileComponent {
       else {
         this.profilePicture = "../../assets/default-pfp.jpg";
       }
+
+      // Now we retrieve all the user's blogposts
+        this.apiService.GetPostsByUserId(this.user.usernameUnique).subscribe((data) => {
+            this.posts = data;
+            console.log(this.posts);
+        });
+
     },
     (error) => {
       if (error.status == 404) {

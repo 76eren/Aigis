@@ -1,10 +1,11 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import {HttpClient, HttpHeaders} from '@angular/common/http';
 import { Observable, OperatorFunction } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
 import { z } from 'zod';
 import { AuthService } from './auth.service';
 import {UserModel} from "../../models/user.model";
+import {PostModel} from "../../models/post.model";
 
 
 @Injectable({
@@ -73,6 +74,12 @@ import {UserModel} from "../../models/user.model";
         );
       })
     );
+  }
+
+  public GetPostsByUserId(id: string): Observable<PostModel[]> {
+      let token = this.authService.getToken();
+      const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+      return this.http.get<PostModel[]>(`${ApiService.API_URL}/post/${id}`, {headers: headers});
   }
 
 }

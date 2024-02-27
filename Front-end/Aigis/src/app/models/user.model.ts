@@ -1,10 +1,10 @@
 export class UserModel {
   constructor(
-    public id: String,
-    public username: String,
-    public usernameUnique: String,
-    public role: String,
-    public about?: String,
-    public profilePictureId?: String,
+    public id: string,
+    public username: string,
+    public usernameUnique: string,
+    public role: string,
+    public about?: string,
+    public profilePictureId?: string,
   ) {}
 }
