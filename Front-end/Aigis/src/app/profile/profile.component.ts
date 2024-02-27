@@ -20,6 +20,7 @@ export class ProfileComponent {
 
   public user?: UserModel;
   public profilePicture: string = "";
+  public userFound: boolean = true;
 
   constructor(private apiService: ApiService, private route: ActivatedRoute, private authService: AuthService) {}
 
@@ -46,19 +47,23 @@ export class ProfileComponent {
       return;
     }
 
-    this.apiService.GetUserById(this.id).subscribe((data) => {
+    this.apiService.GetUserById(this.id).subscribe((
+        data) => {
       this.user = data;
-      console.log(data);
 
       if (this.user.profilePictureId != null && this.user.profilePictureId != "") {
         this.profilePicture = `http://localhost:8080/api/v1/image/direct/${this.user.profilePictureId}`;
         console.log(this.profilePicture);
-
       }
       else {
         this.profilePicture = "../../assets/default-pfp.jpg";
       }
-
+    },
+    (error) => {
+      if (error.status == 404) {
+        this.userFound = false;
+        this.profilePicture = "../../assets/default-pfp.jpg";
+      }
     });
   }
 }

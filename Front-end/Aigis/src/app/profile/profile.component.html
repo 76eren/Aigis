@@ -6,9 +6,11 @@
     </div>
   </div>
   <div class="about">
-    <h1 class="one">{{user?.username}}</h1>
-    <p class="two">&commat;{{user?.usernameUnique}}</p>
-    <p class="bio">{{user?.about}}</p>
+    <h1 *ngIf="userFound" class="one">{{user?.username}}</h1>
+    <p *ngIf="userFound" class="two">&commat;{{user?.usernameUnique}}</p>
+    <p *ngIf="userFound" class="bio">{{user?.about}}</p>
+
+    <h1 *ngIf="!userFound">User does not exist</h1>
   </div>
 
 </div>
