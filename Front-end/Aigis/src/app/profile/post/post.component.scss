@@ -1,10 +1,33 @@
 .container {
   display: flex;
   flex-direction: column;
-  padding-right: 10%;
-  padding-left: 10%;
-  margin-left: 10%;
+  margin: 0 10%;
   border: 1px solid black;
-  width: 100px;
+  padding: 20px;
+  background-color: #f9f9f9;
+}
 
+.about {
+  display: flex;
+  flex-direction: row;
+  font-style: italic;
+  color: #777;
+  margin-bottom: 15px;
+  font-size: 0.9em;
+}
+
+.content {
+  font-size: 1.1em;
+  line-height: 1.6;
+}
+
+.image {
+  margin-top: 20px;
+  text-align: center;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 8px;
 }

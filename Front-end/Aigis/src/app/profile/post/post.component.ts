@@ -15,8 +15,18 @@ export class PostComponent {
   @Input() post?: PostModel;
   @Input() user?: UserModel;
 
+  public imageUrl: String = "";
+  public hasImage: boolean = true;
+
   constructor(private datePipe: DatePipe) {}
 
+  ngOnInit() {
+    if (this.post?.imageId && this.post?.imageId !== '') {
+      this.imageUrl = `http://localhost:8080/api/v1/image/direct/${this.post?.imageId}`;
+    } else {
+      this.hasImage = false;
+    }
+  }
 
   public getDate() {
     const date = new Date(this.post?.date!);

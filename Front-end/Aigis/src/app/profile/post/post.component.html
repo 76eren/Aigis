@@ -4,7 +4,10 @@
             <p>{{user?.username}} • &commat;{{user?.usernameUnique}} • {{getDate()}}</p>
         </div>
         <div class="content">
-
+            <p>{{post?.content}}</p>
+            <div class="image" *ngIf="hasImage">
+                <img src="{{imageUrl}}" alt="{{post?.content}}">
+            </div>
         </div>
     </div>
 </div>
