@@ -2,7 +2,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { AppComponent } from './app.component';
 import { RouterModule } from '@angular/router';
-import { CommonModule } from '@angular/common';
+import {CommonModule, DatePipe} from '@angular/common';
 import { NavbarComponent } from './navbar/navbar.component';
 import { LucideAngularModule, icons } from 'lucide-angular';
 import { routes } from './app.routes';
@@ -36,7 +36,8 @@ import {ApiService} from "./shared/service/api.service";
   providers: [
     HttpClientModule,
     { provide: LocationStrategy, useClass: HashLocationStrategy },
-    AuthService, ApiService
+    AuthService, ApiService,
+    DatePipe
 
   ],  bootstrap: [AppComponent],
 })

@@ -15,7 +15,7 @@
 
   <div class="posts">
     <div class="post" *ngFor="let post of posts">
-
+      <app-post [post]="post" [user]="user"></app-post>
     </div>
   </div>
 

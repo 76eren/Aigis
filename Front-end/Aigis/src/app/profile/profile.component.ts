@@ -6,11 +6,12 @@ import {Subscription} from "rxjs";
 import {AuthService} from "../shared/service/auth.service";
 import {UserModel} from "../models/user.model";
 import {PostModel} from "../models/post.model";
+import {PostComponent} from "./post/post.component";
 
 @Component({
   selector: 'app-profile',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, PostComponent],
   templateUrl: './profile.component.html',
   styleUrl: './profile.component.scss'
 })
