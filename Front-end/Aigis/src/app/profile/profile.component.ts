@@ -7,18 +7,19 @@ import {AuthService} from "../shared/service/auth.service";
 import {UserModel} from "../models/user.model";
 import {PostModel} from "../models/post.model";
 import {PostComponent} from "./post/post.component";
+import {LucideAngularModule} from "lucide-angular";
 
 @Component({
   selector: 'app-profile',
   standalone: true,
-  imports: [CommonModule, PostComponent],
+  imports: [CommonModule, PostComponent, LucideAngularModule],
   templateUrl: './profile.component.html',
   styleUrl: './profile.component.scss'
 })
 export class ProfileComponent {
   private routeSub: Subscription = new Subscription();
   private id?: string;
-  private isViewingOwnProfile?: boolean;
+  public isViewingOwnProfile?: boolean;
 
   public user?: UserModel;
   public profilePicture: string = "";
