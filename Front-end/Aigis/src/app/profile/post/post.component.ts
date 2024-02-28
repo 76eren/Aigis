@@ -33,7 +33,7 @@ export class PostComponent {
       this.profilePictureUrl = `http://localhost:8080/api/v1/image/direct/${this.user?.profilePictureId}`;
     }
     else {
-      this.profilePictureUrl = '../../assets/default-profile-picture.png';
+      this.profilePictureUrl = '../../assets/default-pfp.jpg';
     }
   }
 
