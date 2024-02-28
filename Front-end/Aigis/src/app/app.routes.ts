@@ -6,6 +6,7 @@ import {loginGuard} from "./shared/guard/login.guard";
 import {RegisterComponent} from "./register/register.component";
 import {ProfileComponent} from "./profile/profile.component";
 import {NotLoginGuard} from "./shared/guard/not-login.guard";
+import {EditProfileComponent} from "./profile/edit-profile/edit-profile.component";
 
 export const routes: Routes = [
   {
@@ -33,13 +34,18 @@ export const routes: Routes = [
         pathMatch: 'full',
       },
       {
-        path: 'profile/:id',
+        path: 'profile/:usernameUnique',
         component: ProfileComponent,
         canActivate: [NotLoginGuard]
       },
       {
         path: 'profile',
         component: ProfileComponent,
+        canActivate: [NotLoginGuard]
+      },
+      {
+        path: 'edit/:usernameUnique',
+        component: EditProfileComponent,
         canActivate: [NotLoginGuard]
       }
 

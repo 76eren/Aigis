@@ -27,11 +27,11 @@ export class ProfileComponent {
 
   public posts: PostModel[] = [];
 
-  constructor(private apiService: ApiService, private route: ActivatedRoute, private authService: AuthService) {}
+  constructor(private apiService: ApiService, private route: ActivatedRoute, private authService: AuthService, private router: Router) {}
 
   ngOnInit() {
     this.routeSub = this.route.params.subscribe(params => {
-      this.id = params['id'];
+      this.id = params['usernameUnique'];
     });
 
     if (this.id == undefined) {
@@ -77,5 +77,9 @@ export class ProfileComponent {
         this.profilePicture = "../../assets/default-pfp.jpg";
       }
     });
+  }
+
+  editProfile() {
+    this.router.navigate([`/edit/${this.user?.usernameUnique}`]);
   }
 }
