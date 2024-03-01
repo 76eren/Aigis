@@ -27,6 +27,8 @@ export class ProfileComponent {
 
   public posts: PostModel[] = [];
 
+  public isEditMode: boolean = false;
+
   constructor(private apiService: ApiService, private route: ActivatedRoute, private authService: AuthService, private router: Router) {}
 
   ngOnInit() {
@@ -80,6 +82,6 @@ export class ProfileComponent {
   }
 
   editProfile() {
-    this.router.navigate([`/edit/${this.user?.usernameUnique}`]);
+    this.isEditMode = !this.isEditMode;
   }
 }

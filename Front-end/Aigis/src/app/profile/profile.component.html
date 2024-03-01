@@ -15,12 +15,15 @@
     <h1 *ngIf="!userFound">User does not exist</h1>
   </div>
 
-  <div class="posts">
+  <div class="posts" *ngIf="!isEditMode">
     <div class="post" *ngFor="let post of posts">
       <app-post [post]="post" [user]="user"></app-post>
     </div>
   </div>
 
+  <div class="edit" *ngIf="isEditMode">
+    <h1>Place holder</h1>
+  </div>
 
 </div>
 
