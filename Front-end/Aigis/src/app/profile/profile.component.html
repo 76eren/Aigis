@@ -22,7 +22,21 @@
   </div>
 
   <div class="edit" *ngIf="isEditMode">
-    <h1>Place holder</h1>
+    <div class="edit-user-form ">
+      <h1 class="text-center">Edit profile</h1>
+      <label for="Username">Username</label>
+      <input id="username" name="username" [(ngModel)]="username" placeholder="Username">
+      <label for="bio">Biography</label>
+      <input id="bio" name="bio" [(ngModel)]="bio" placeholder="Biography">
+
+      <label for="docpicker">Choose a profile picture:</label>
+      <input type="file" id="docpicker" name="docpicker" accept=".jpg,.jpeg,.png" [(ngModel)]="image" #docpicker/>
+
+      <input type="button" value="Submit" (click)="onSubmitClick()">
+
+
+    </div>
+
   </div>
 
 </div>

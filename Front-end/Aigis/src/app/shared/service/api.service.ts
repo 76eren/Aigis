@@ -104,4 +104,10 @@ import {PostModel} from "../../models/post.model";
             })
         );
     }
+
+    public AssignPfp(usernameUnique: String, formData: FormData) {
+      let token = this.authService.getToken();
+      const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+      return this.http.patch(`${ApiService.API_URL}/user/${usernameUnique}`, formData, {responseType: 'text', observe: 'response', headers: headers});
+    }
 }
