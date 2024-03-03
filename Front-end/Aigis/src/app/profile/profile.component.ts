@@ -9,7 +9,7 @@ import {PostModel} from "../models/post.model";
 import {PostComponent} from "./post/post.component";
 import {LucideAngularModule} from "lucide-angular";
 import {FormsModule} from "@angular/forms";
-
+import {UserEditModel} from "../models/user-edit.model";
 @Component({
   selector: 'app-profile',
   standalone: true,
@@ -17,6 +17,7 @@ import {FormsModule} from "@angular/forms";
   templateUrl: './profile.component.html',
   styleUrl: './profile.component.scss'
 })
+
 export class ProfileComponent {
   private routeSub: Subscription = new Subscription();
   private id?: string;
@@ -27,7 +28,7 @@ export class ProfileComponent {
   public posts: PostModel[] = [];
 
   // Edit mdoe
-  public isEditMode: boolean = true;
+  public isEditMode: boolean = false;
 
   @Input() public username?: string;
   @Input() public bio?: string;
@@ -100,13 +101,26 @@ export class ProfileComponent {
       if (file && file instanceof Blob) {
         formData.append('image', file, 'image.jpg'); // Uh oh, hard coding an extension
       }
+
       this.apiService.AssignPfp(this.user?.usernameUnique!, formData).subscribe((data) => {
 
       });
     }
 
+    if (this.bio != "" && this.username != "" && this.bio != undefined && this.username != undefined) {
+      let userEdit: UserEditModel = {
+        username: this.username,
+        about: this.bio
+      }
+
+      this.apiService.UpdateUser(this.user?.id!, userEdit).subscribe((data) => {
+
+      });
+    }
+
+    location.reload();
+
 
   }
 
-  protected readonly undefined = undefined;
 }

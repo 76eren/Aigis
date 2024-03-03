@@ -6,6 +6,7 @@ import { z } from 'zod';
 import { AuthService } from './auth.service';
 import {UserModel} from "../../models/user.model";
 import {PostModel} from "../../models/post.model";
+import {UserEditModel} from "../../models/user-edit.model";
 
 
 @Injectable({
@@ -110,4 +111,12 @@ import {PostModel} from "../../models/post.model";
       const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
       return this.http.patch(`${ApiService.API_URL}/user/${usernameUnique}`, formData, {responseType: 'text', observe: 'response', headers: headers});
     }
+
+    public UpdateUser(id: string, userData: UserEditModel) {
+        let token = this.authService.getToken();
+        const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+        return this.http.put(`${ApiService.API_URL}/user/${id}`, userData, {responseType: 'text', observe: 'response', headers: headers});
+    }
+
+
 }
