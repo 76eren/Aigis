@@ -97,6 +97,7 @@ export class ProfileComponent {
 
   onSubmitClick() {
     if (this.docpicker.nativeElement.files.length > 0) {
+      // TODO: Move this logic to the api service
       let formData: FormData = new FormData();
       let file = this.docpicker.nativeElement.files[0];
       if (file && file instanceof Blob) {
