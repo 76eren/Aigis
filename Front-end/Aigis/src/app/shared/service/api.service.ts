@@ -17,7 +17,7 @@ import {UserEditModel} from "../../models/user-edit.model";
     constructor(private http: HttpClient, private authService: AuthService) {
     }
 
-    PostLogin(payload: { password: string; usernameUnique: string }) {
+    public PostLogin(payload: { password: string; usernameUnique: string }) {
         return this.http.post(`${ApiService.API_URL}/auth/login`, payload).pipe(
             map((data) => {
                 return z
@@ -34,7 +34,7 @@ import {UserEditModel} from "../../models/user-edit.model";
         );
     }
 
-    PostRegister(payload: { usernameUnique: string; password: string, username: string }) {
+    public PostRegister(payload: { usernameUnique: string; password: string, username: string }) {
         return this.http.post(`${ApiService.API_URL}/user/register`, payload).pipe(
             map((data) => {
                 return z
@@ -48,7 +48,7 @@ import {UserEditModel} from "../../models/user-edit.model";
         );
     }
 
-    GetUserById(id: string): Observable<UserModel> {
+    public GetUserById(id: string): Observable<UserModel> {
         return this.http.get(`${ApiService.API_URL}/user/${id}`).pipe(
             map((data) => {
                 return z
@@ -117,6 +117,31 @@ import {UserEditModel} from "../../models/user-edit.model";
         const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
         return this.http.put(`${ApiService.API_URL}/user/${id}`, userData, {responseType: 'text', observe: 'response', headers: headers});
     }
+
+  public CreatePost(userId: string, content: string, image: File | null) {
+    let token = this.authService.getToken();
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+
+    const formData = new FormData();
+    const postContent = JSON.stringify({ content: content });
+    formData.append('post', postContent);
+
+    if (image) {
+      formData.append('image', image);
+    }
+
+    return this.http.post(`${ApiService.API_URL}/post/create/${userId}`, formData, {
+      responseType: 'text',
+      observe: 'response',
+      headers: headers
+    });
+  }
+
+  public GetImage(id: String) {
+      return (`${ApiService.API_URL}/image/direct/${id}`);
+  }
+
+
 
 
 }

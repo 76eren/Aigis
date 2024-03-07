@@ -69,16 +69,17 @@ export class ProfileComponent {
 
 
       if (this.user.profilePictureId != null && this.user.profilePictureId != "") {
-        this.profilePicture = `http://localhost:8080/api/v1/image/direct/${this.user.profilePictureId}`;
+        this.profilePicture = this.apiService.GetImage(this.user.profilePictureId);
       }
       else {
         this.profilePicture = "../../assets/default-pfp.jpg";
       }
 
-      // Now we retrieve all the user's blogposts
         this.apiService.GetPostsByUserId(this.user.usernameUnique).subscribe((data) => {
             this.posts = data;
-            console.log(this.posts);
+            this.posts.sort((a, b) => {
+                return b.date - a.date;
+            });
         });
 
     },

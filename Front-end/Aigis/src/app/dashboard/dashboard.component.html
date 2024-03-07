@@ -1,9 +1,9 @@
 <div class="post-container">
-  <textarea class="post-textarea" placeholder="What's happening?"></textarea>
+  <textarea [(ngModel)]="text" class="post-textarea" placeholder="What's happening?"></textarea>
   <div class="post-actions">
     <button class="post-action-button post-btn" title="Post">
       <lucide-icon name="plus" class="sidenav__item" />
     </button>
-    <button class="post-action-button post-btn" title="Post">Post</button>
+    <button class="post-action-button post-btn" (click)="onSubmit()" title="Post">Post</button>
   </div>
 </div>

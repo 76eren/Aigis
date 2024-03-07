@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import {PostModel} from "../../models/post.model";
 import {UserModel} from "../../models/user.model";
 import { DatePipe } from '@angular/common';
+import {ApiService} from "../../shared/service/api.service";
 
 @Component({
   selector: 'app-post',
@@ -20,17 +21,17 @@ export class PostComponent {
 
   public profilePictureUrl: String = "";
 
-  constructor(private datePipe: DatePipe) {}
+  constructor(private datePipe: DatePipe, private apiService: ApiService) {}
 
   ngOnInit() {
     if (this.post?.imageId && this.post?.imageId !== '') {
-      this.imageUrl = `http://localhost:8080/api/v1/image/direct/${this.post?.imageId}`;
+      this.imageUrl = this.apiService.GetImage(this.post?.imageId!);
     } else {
       this.hasImage = false;
     }
 
     if (this.user?.profilePictureId && this.user?.profilePictureId !== '') {
-      this.profilePictureUrl = `http://localhost:8080/api/v1/image/direct/${this.user?.profilePictureId}`;
+      this.profilePictureUrl = this.apiService.GetImage(this.user?.profilePictureId!);
     }
     else {
       this.profilePictureUrl = '../../assets/default-pfp.jpg';
