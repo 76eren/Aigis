@@ -114,12 +114,14 @@ export class ProfileComponent {
         about: this.bio
       }
 
-      this.apiService.UpdateUser(this.user?.id!, userEdit).subscribe((data) => {
 
+      this.apiService.UpdateUser(this.user?.id!, userEdit).subscribe((data) => {
+        if (data.status == 200) {
+          location.reload();
+        }
       });
     }
 
-    location.reload();
 
 
   }
