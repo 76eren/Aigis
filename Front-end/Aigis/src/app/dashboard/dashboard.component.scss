@@ -1,0 +1,59 @@
+.post-container {
+  background-color: #fff;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  padding: 16px;
+  max-width: 600px;
+  margin: 20px auto auto;
+}
+
+.post-textarea {
+  width: 100%;
+  height: 120px;
+  border: none;
+  padding: 8px 0;
+  margin-bottom: 8px;
+  resize: none;
+}
+
+.post-actions {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}
+
+.post-action-button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 8px;
+  font-size: 1.2rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.post-action-button i {
+  font-size: 24px;
+}
+
+.post-action-button.post-btn {
+  background-color: #1da1f2;
+  color: white;
+  border-radius: 20px;
+  padding: 8px 16px;
+  margin-left: 8px;
+  transition: background-color 0.2s ease;
+}
+
+.post-action-button.post-btn:hover {
+  background-color: #1991db;
+}
+
+input[type="file"] {
+  display: none;
+}
+
+.lucidicon-picture {
+  cursor: pointer;
+}
