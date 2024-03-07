@@ -1,7 +1,8 @@
 <div class="post-container">
   <textarea [(ngModel)]="text" class="post-textarea" placeholder="What's happening?"></textarea>
   <div class="post-actions">
-    <button class="post-action-button post-btn" title="Post">
+    <input type="file" #fileInput style="display: none" (change)="fileChanged($event)" accept=".jpg,.jpeg,.png" />
+    <button (click)="fileInput.click()" class="post-action-button post-btn" title="Post">
       <lucide-icon name="plus" class="sidenav__item" />
     </button>
     <button class="post-action-button post-btn" (click)="onSubmit()" title="Post">Post</button>

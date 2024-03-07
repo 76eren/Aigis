@@ -1,4 +1,4 @@
-import {Component} from '@angular/core';
+import {Component, ElementRef, ViewChild} from '@angular/core';
 import {CommonModule} from '@angular/common';
 import {ApiService} from "../shared/service/api.service";
 import {UserModel} from "../models/user.model";
@@ -20,6 +20,8 @@ import {catchError} from "rxjs";
 export class DashboardComponent {
   public user?: UserModel;
   public text?: string;
+  public fileName: string = ""
+  @ViewChild('fileInput') fileInput!: ElementRef;
 
 
   constructor(private apiService: ApiService, private authService: AuthService, private toastr: ToastrService) {}
@@ -34,7 +36,13 @@ export class DashboardComponent {
 
   onSubmit() {
     if (this.text != "" || this.text != null) {
-      this.apiService.CreatePost(this.user!.usernameUnique, this.text!, null).pipe(
+
+      let file: File | null = null;
+      if (this.fileInput.nativeElement.files.length > 0) {
+        file = this.fileInput.nativeElement.files[0];
+      }
+
+      this.apiService.CreatePost(this.user!.usernameUnique, this.text!, file).pipe(
         catchError((error: any) => {
           if (error.status === 403) {
             this.toastr.error('Post could not be created', 'Error');
@@ -45,9 +53,18 @@ export class DashboardComponent {
         if (data.status == 201) {
           this.toastr.success('Post created successfully', 'Success');
           this.text = "";
+          this.fileInput.nativeElement.value = "";
         }
       });
     }
   }
 
+
+  fileChanged(event: any) {
+    if (event.target.files.length > 0) {
+      const file = event.target.files[0];
+      this.fileName = file.name;
+      console.log("Selected file:", this.fileName);
+    }
+  }
 }
