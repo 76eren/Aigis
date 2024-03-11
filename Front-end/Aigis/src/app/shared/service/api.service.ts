@@ -48,34 +48,50 @@ import {UserEditModel} from "../../models/user-edit.model";
         );
     }
 
-    public GetUserById(id: string): Observable<UserModel> {
-        return this.http.get(`${ApiService.API_URL}/user/${id}`).pipe(
-            map((data) => {
-                return z
-                    .object({
-                        payload: z.object({
-                            id: z.string(),
-                            username: z.string(),
-                            usernameUnique: z.string(),
-                            about: z.string().nullable(),
-                            role: z.string(),
-                            profilePictureId: z.string().nullable(),
-                        }),
-                    })
-                    .parse(data);
+  public GetUserById(id: string): Observable<UserModel> {
+    return this.http.get(`${ApiService.API_URL}/user/${id}`).pipe(
+      map((data) => {
+        return z
+          .object({
+            payload: z.object({
+              id: z.string(),
+              username: z.string(),
+              usernameUnique: z.string(),
+              about: z.string().nullable(),
+              role: z.string(),
+              profilePictureId: z.string().nullable(),
+              following: z.array(z.object({
+                username: z.string(),
+                usernameUnique: z.string(),
+                role: z.string(),
+                about: z.string().nullable(),
+                profilePictureId: z.string().nullable(),
+              })).nullable(),
+              followers: z.array(z.object({
+                username: z.string(),
+                usernameUnique: z.string(),
+                role: z.string(),
+                about: z.string().nullable(),
+                profilePictureId: z.string().nullable(),
+              })).nullable(),
             }),
-            map((data) => {
-                return new UserModel(
-                    data.payload.id,
-                    data.payload.username,
-                    data.payload.usernameUnique,
-                    data.payload.role,
-                    data.payload.about || 'This user does not have a biography yet',
-                    data.payload.profilePictureId || ''
-                );
-            })
+          })
+          .parse(data);
+      }),
+      map((data) => {
+        return new UserModel(
+          data.payload.id,
+          data.payload.username,
+          data.payload.usernameUnique,
+          data.payload.role,
+          data.payload.about || 'This user does not have a biography yet',
+          data.payload.profilePictureId || '',
+          data.payload.following || [],
+          data.payload.followers || []
         );
-    }
+      })
+    );
+  }
 
     public GetPostsByUserId(id: string): Observable<PostModel[]> {
         let token = this.authService.getToken();
@@ -142,6 +158,10 @@ import {UserEditModel} from "../../models/user-edit.model";
   }
 
 
-
+  public FollowUser(target: UserModel) {
+    let token = this.authService.getToken();
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+    return this.http.patch(`${ApiService.API_URL}/user/follow/${target.usernameUnique}`, {}, {responseType: 'text', observe: 'response', headers: headers});
+  }
 
 }

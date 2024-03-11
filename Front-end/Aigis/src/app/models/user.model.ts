@@ -6,5 +6,17 @@ export class UserModel {
     public role: string,
     public about?: string,
     public profilePictureId?: string,
+    public following?: UserSimplifiedModel[],
+    public followers?: UserSimplifiedModel[],
+  ) {}
+}
+
+export class UserSimplifiedModel {
+  constructor(
+    public username: string,
+    public usernameUnique: string,
+    public role: string,
+    public about?: string | null,
+    public profilePictureId?: string | null,
   ) {}
 }
