@@ -161,6 +161,15 @@ public class UserController {
         User createdUser = userDAO.save(user);
         return new ApiResponse<>(userMapper.fromEntity(createdUser));
     }
+
+    @PatchMapping(value = "/follow/{usernameUnique}")
+    public ApiResponse<UserResponseDTO> followUser(
+            @PathVariable String usernameUnique,
+            Authentication authentication
+    ) {
+        User user = userDAO.findByUsernameUnique(authentication.getName()).get();
+        return this.userDAO.followUser(user, usernameUnique);
+    }
 }
 
 

@@ -16,4 +16,6 @@ public class UserEditDTO {
     private String password;
     private Role role;
     private String about;
+
+    // Following logic is not included here
 }

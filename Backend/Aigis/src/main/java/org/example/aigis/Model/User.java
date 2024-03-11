@@ -44,6 +44,11 @@ public class User implements UserDetails {
     @JoinColumn(name = "pfp_user")
     private Image profilePicture;
 
+
+    @ManyToMany
+    private List<User> following;
+
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of(new SimpleGrantedAuthority(role.name()));
