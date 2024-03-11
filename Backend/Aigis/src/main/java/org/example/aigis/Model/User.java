@@ -48,6 +48,8 @@ public class User implements UserDetails {
     @ManyToMany
     private List<User> following;
 
+    @ManyToMany
+    private List<User> followers;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

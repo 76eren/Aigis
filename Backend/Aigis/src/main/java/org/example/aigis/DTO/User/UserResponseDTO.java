@@ -21,4 +21,5 @@ public class UserResponseDTO {
     private Role role;
     private String profilePictureId;
     private List<UserResponseDTOSimple> following;
+    private List<UserResponseDTOSimple> followers;
 }

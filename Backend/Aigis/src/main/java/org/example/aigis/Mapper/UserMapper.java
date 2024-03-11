@@ -33,6 +33,19 @@ public class UserMapper {
                     .build());
         }
 
+        List<UserResponseDTOSimple> followers = new ArrayList<>();
+        for (User i : user.getFollowers()) {
+            followers.add(UserResponseDTOSimple
+                    .builder()
+                    .id(i.getId())
+                    .username(i.getUsername())
+                    .usernameUnique(i.getUsernameUnique())
+                    .about(i.getAbout())
+                    .role(i.getRole())
+                    .profilePictureId(i.getProfilePicture() != null ? String.valueOf(i.getProfilePicture().getId()) : null)
+                    .build());
+        }
+
         return UserResponseDTO
                 .builder()
                 .id(user.getId())
@@ -42,6 +55,7 @@ public class UserMapper {
                 .about(user.getAbout())
                 .profilePictureId(profilePictureId)
                 .following(following)
+                .followers(followers)
                 .build();
 
     }

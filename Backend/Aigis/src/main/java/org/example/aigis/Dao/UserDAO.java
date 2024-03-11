@@ -11,10 +11,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 @Component
 @RequiredArgsConstructor
@@ -59,13 +56,31 @@ public class UserDAO implements UserDetailsService {
 
         if (toFollow != null) {
             users.remove(toFollow);
+
+            List<User> followers = toFollow.getFollowers();
+            followers.remove(user);
+            toFollow.setFollowers(followers);
+
+            this.userRepository.save(toFollow);
+            this.userRepository.save(toFollow);
         }
         else {
             Optional<User> userOptional = userRepository.findByUsernameUnique(usernameUnique);
             if (userOptional.isEmpty()) {
                 return new ApiResponse<>("User not found");
             }
-            users.add(userOptional.get());
+            User newUser = userOptional.get();
+            users.add(newUser);
+
+            List<User> followers = newUser.getFollowers();
+            if (followers == null) {
+                followers = new ArrayList<>();
+            }
+
+            followers.add(user);
+            newUser.setFollowers(followers);
+
+            this.userRepository.save(newUser);
         }
 
         return new ApiResponse<>(this.userMapper.fromEntity(userRepository.save(user)));
