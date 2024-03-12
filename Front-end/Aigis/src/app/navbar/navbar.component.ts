@@ -13,10 +13,15 @@ import {AuthService} from "../shared/service/auth.service";
   styleUrl: './navbar.component.scss',
 })
 export class NavbarComponent {
+  public search: boolean = false;
 
   constructor(private authService: AuthService) {}
 
   signout() {
     this.authService.signout();
+  }
+
+  onSearchClick() {
+    this.search = !this.search;
   }
 }
