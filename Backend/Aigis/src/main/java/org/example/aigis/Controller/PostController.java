@@ -72,6 +72,11 @@ public class PostController {
             postsGet.add(postMapper.fromEntityToPostGetDto(post));
         }
 
+        // Sort the post by date going up
+        // TODO: Sort this inside of the database instead of runtime
+        postsGet.sort(Comparator.comparing(PostGetDTO::getDate));
+
+
         return new ApiResponse<>(postsGet, "Posts", HttpStatus.OK);
     }
 

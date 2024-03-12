@@ -72,8 +72,7 @@ export class ProfileComponent {
         ? this.apiService.GetImage(user.profilePictureId)
         : "../../assets/default-pfp.jpg";
 
-      const posts = await lastValueFrom(this.apiService.GetPostsByUserId(user.usernameUnique));
-      this.posts = posts.sort((a, b) => b.date - a.date);
+      this.posts = await lastValueFrom(this.apiService.GetPostsByUserId(user.usernameUnique));
 
       // If the user is not viewing their own profile, we need to check if they are following the user
       if (!this.isViewingOwnProfile) {

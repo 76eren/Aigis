@@ -53,27 +53,6 @@ export class DashboardComponent {
       });
     });
 
-    // TODO: Make the posts newest on top
-    // TODO: Make this method asynchronous correctly and wait for all posts to be loaded?
-
-    // Now we pair each post to each user
-    // This doesn't work yet... :(
-    // let pairs: [PostModel, UserSimplifiedModel][] = [];
-    // for (let i = 0; i < this.posts.length; i++) {
-    //   pairs.push([this.posts[i], this.users[i]]);
-    // }
-    //
-    // this.posts = this.posts.sort((a, b) => b.date - a.date);
-    // let newUsers: UserSimplifiedModel[] = [];
-    //
-    // for (let post of this.posts) {
-    //   pairs.forEach((pair) => {
-    //     if (pair[0] == post) {
-    //       newUsers.push(pair[1]);
-    //     }
-    //   });
-    // }
-    // this.users = newUsers;
   }
 
 
