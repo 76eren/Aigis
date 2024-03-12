@@ -8,3 +8,8 @@
     <button class="post-action-button post-btn" (click)="onSubmit()" title="Post">Post</button>
   </div>
 </div>
+
+
+<div class="post" *ngFor="let post of posts; let i = index">
+  <app-post [post]="post" [user]="users[i]"></app-post>
+</div>

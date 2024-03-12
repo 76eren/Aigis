@@ -13,6 +13,7 @@ export class UserModel {
 
 export class UserSimplifiedModel {
   constructor(
+    public id: string,
     public username: string,
     public usernameUnique: string,
     public role: string,

@@ -1,18 +1,20 @@
 import {Component, ElementRef, ViewChild} from '@angular/core';
 import {CommonModule} from '@angular/common';
 import {ApiService} from "../shared/service/api.service";
-import {UserModel} from "../models/user.model";
+import {UserModel, UserSimplifiedModel} from "../models/user.model";
 import {AuthService} from "../shared/service/auth.service";
 import {LucideAngularModule} from "lucide-angular";
 import {FormsModule} from "@angular/forms";
 import {Toast, ToastrService} from "ngx-toastr";
-import {catchError} from "rxjs";
+import {catchError, lastValueFrom} from "rxjs";
+import {PostModel} from "../models/post.model";
+import {PostComponent} from "../profile/post/post.component";
 
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [CommonModule, LucideAngularModule, FormsModule],
+  imports: [CommonModule, LucideAngularModule, FormsModule, PostComponent],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.scss'
 })
@@ -23,16 +25,57 @@ export class DashboardComponent {
   public fileName: string = ""
   @ViewChild('fileInput') fileInput!: ElementRef;
 
+  public posts: PostModel[] = [];
+  public users: UserSimplifiedModel[] = [];
 
   constructor(private apiService: ApiService, private authService: AuthService, private toastr: ToastrService) {}
 
   ngOnInit() {
-    this.apiService.GetUserById(this.authService.getId()).subscribe((user: UserModel) => {
-      this.user = user;
+    this.SearchForUser().then(() => {
+      this.loadPosts();
+    });
+  }
+
+  async SearchForUser() {
+    this.user = await lastValueFrom(this.apiService.GetUserById(this.authService.getId()));
+  }
+
+
+  loadPosts() {
+    this.user?.following?.forEach((user: UserSimplifiedModel) => {
+      this.apiService.GetPostsByUserId(user.usernameUnique).subscribe((posts: PostModel[]) => {
+        if (posts.length != 0) {
+          this.posts.push(...posts)
+          for (let post of posts) {
+            this.users.push(user)
+          }
+        }
+      });
     });
 
+    // TODO: Make the posts newest on top
+    // TODO: Make this method asynchronous correctly and wait for all posts to be loaded?
 
+    // Now we pair each post to each user
+    // This doesn't work yet... :(
+    // let pairs: [PostModel, UserSimplifiedModel][] = [];
+    // for (let i = 0; i < this.posts.length; i++) {
+    //   pairs.push([this.posts[i], this.users[i]]);
+    // }
+    //
+    // this.posts = this.posts.sort((a, b) => b.date - a.date);
+    // let newUsers: UserSimplifiedModel[] = [];
+    //
+    // for (let post of this.posts) {
+    //   pairs.forEach((pair) => {
+    //     if (pair[0] == post) {
+    //       newUsers.push(pair[1]);
+    //     }
+    //   });
+    // }
+    // this.users = newUsers;
   }
+
 
   onSubmit() {
     if (this.text != "" || this.text != null) {
@@ -58,7 +101,6 @@ export class DashboardComponent {
       });
     }
   }
-
 
   fileChanged(event: any) {
     if (event.target.files.length > 0) {

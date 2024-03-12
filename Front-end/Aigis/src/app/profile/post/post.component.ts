@@ -1,7 +1,7 @@
 import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {PostModel} from "../../models/post.model";
-import {UserModel} from "../../models/user.model";
+import {UserModel, UserSimplifiedModel} from "../../models/user.model";
 import { DatePipe } from '@angular/common';
 import {ApiService} from "../../shared/service/api.service";
 
@@ -14,7 +14,7 @@ import {ApiService} from "../../shared/service/api.service";
 })
 export class PostComponent {
   @Input() post?: PostModel;
-  @Input() user?: UserModel;
+  @Input() user?: UserSimplifiedModel;
 
   public imageUrl: String = "";
   public hasImage: boolean = true;
