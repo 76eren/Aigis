@@ -132,6 +132,10 @@ export class ProfileComponent {
   }
 
   follow() {
+    if (this.user == undefined) {
+      return;
+    }
+
     let initial: boolean = this.isFollowing;
     this.isFollowing = !this.isFollowing;
 

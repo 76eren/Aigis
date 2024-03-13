@@ -6,7 +6,7 @@
     </div>
   </div>
   <div class="about">
-    <div class="edit-icon-container">
+    <div class="edit-icon-container" *ngIf="user != undefined">
       <lucide-icon (click)="editProfile()" *ngIf="isViewingOwnProfile" name="pencil" class="edit" />
       <lucide-icon (click)="follow()" *ngIf="!isViewingOwnProfile && this.isFollowing" name="user-check" class="follow"/>
       <lucide-icon (click)="follow()" *ngIf="!isViewingOwnProfile && !this.isFollowing" name="user-plus" class="follow"/>
