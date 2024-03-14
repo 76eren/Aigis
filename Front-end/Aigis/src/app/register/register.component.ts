@@ -20,17 +20,6 @@ export class RegisterComponent {
   constructor(private apiService: ApiService, private toastr: ToastrService, private router: Router) {}
 
   submitRegister() {
-    // Before we do anything we check if the username and the usernameunique input fields contain special characters
-    if (this.username.match(/[^a-zA-Z0-9]/)) {
-      this.toastr.error('Username contains special characters', 'Error');
-      return;
-    }
-
-    if (this.username != "" && this.password != "" && this.usernameUnique != "") {
-      this.toastr.error('Womp womp', 'Error');
-      return;
-    }
-
     this.apiService
         .PostRegister({ username: this.username, password: this.password, usernameUnique: this.usernameUnique })
         .subscribe({
