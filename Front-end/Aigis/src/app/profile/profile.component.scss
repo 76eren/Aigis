@@ -84,24 +84,6 @@
 
   }
 
-  @media only screen and (max-width: 720px) {
-    .banner {
-      padding: 0;
-    }
-
-    .about {
-      width: 90%;
-      padding: 10px;
-
-      .one, .two, .bio {
-        padding: 0 5px;
-      }
-
-      .bio {
-        font-size: calc(12px + 1vw);
-      }
-    }
-  }
 }
 
 .follow,
@@ -175,3 +157,21 @@
   }
 }
 
+@media only screen and (max-width: 720px) {
+  .banner {
+    padding: 0;
+  }
+
+  .about {
+    width: 90%;
+    padding: 10px;
+
+    .one, .two, .bio {
+      padding: 0 5px;
+    }
+
+    .bio {
+      font-size: calc(12px + 1vw);
+    }
+  }
+}
