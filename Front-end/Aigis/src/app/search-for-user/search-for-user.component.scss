@@ -7,17 +7,16 @@
 
   .search-container {
     width: 100%;
-    max-width: 640px;
+    max-width: 80%;
 
     .search-input {
       width: 100%;
-      padding: 8px 16px;
       border-radius: 20px;
       border: none;
       background-color: #404040;
       color: white;
       font-size: 16px;
-      height: 35px;
+      height: 70px;
     }
 
 
@@ -30,7 +29,6 @@
     }
 
   }
-
 
 
 }
