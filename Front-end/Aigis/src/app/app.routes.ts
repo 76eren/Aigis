@@ -49,7 +49,7 @@ export const routes: Routes = [
   },
   {
     path: '**',
-    redirectTo: 'dashboar' +
+    redirectTo: 'dashboard' +
       '',
   },
 ];
