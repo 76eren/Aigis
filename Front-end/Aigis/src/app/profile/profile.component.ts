@@ -54,8 +54,10 @@ export class ProfileComponent {
       this.id = params['usernameUnique'];
     });
 
+
+
     this.userService.getCurrentSignedInUser().subscribe((user) => {
-      this.userSelf = user;
+      this.userSelf = user.payload;
     });
 
     if (this.id == undefined) {
@@ -64,7 +66,7 @@ export class ProfileComponent {
 
       // TODO: This doesn't need to be a sepearate request
       this.userService.getCurrentSignedInUser().subscribe((user) => {
-        this.id = user.usernameUnique;
+        this.id = user.payload.usernameUnique;
       });
 
     }

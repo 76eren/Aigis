@@ -148,6 +148,7 @@ export class ApiService {
   }
 
   public CreatePost(userId: string, content: string, image: File | null) {
+    console.log("User id is: " + userId)
     const formData = new FormData();
     const postContent = JSON.stringify({ content: content });
     formData.append('post', postContent);

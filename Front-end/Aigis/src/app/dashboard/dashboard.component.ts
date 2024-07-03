@@ -29,18 +29,24 @@ export class DashboardComponent {
   public posts: PostModel[] = [];
   public users: UserSimplifiedModel[] = [];
 
-  constructor(private apiService: ApiService, private authService: AuthService, private toastr: ToastrService, private userService: UserService) {}
+  constructor(
+    private apiService: ApiService,
+    private authService: AuthService,
+    private toastr: ToastrService,
+    private userService: UserService
+
+  ) {}
 
   ngOnInit() {
-    this.SearchForUser().then(() => {
-      this.loadPosts();
-    });
+    this.SearchForUser();
   }
 
-  async SearchForUser() {
-    this.userService.getCurrentSignedInUser().subscribe((user: UserModel) => {
-      this.user = user;
+  SearchForUser() {
+    this.userService.getCurrentSignedInUser().subscribe((response) => {
+      this.user = response.payload;
+      this.loadPosts();
     });
+
   }
 
 
@@ -67,11 +73,12 @@ export class DashboardComponent {
         file = this.fileInput.nativeElement.files[0];
       }
 
+      console.log(this.user)
+      console.log("Username unique is: " + this.user?.usernameUnique)
+
       this.apiService.CreatePost(this.user!.usernameUnique, this.text!, file).pipe(
         catchError((error: any) => {
-          if (error.status === 403) {
             this.toastr.error('Post could not be created', 'Error');
-          }
           throw error;
         })
       ).subscribe(() => {

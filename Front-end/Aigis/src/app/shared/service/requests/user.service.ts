@@ -13,10 +13,10 @@ export class UserService {
   constructor(private apiService: ApiService, private toastr: ToastrService) {
   }
 
-  public getCurrentSignedInUser(): Observable<UserModel> {
-    return this.apiService.get<UserModel>('/user/me').pipe(
+  public getCurrentSignedInUser(): Observable<ApiResponse<UserModel>> {
+    return this.apiService.get<ApiResponse<UserModel>>('/user/me').pipe(
       catchError((error) => {
-        console.error('Error fetching standard location: ', error);
+        console.error('Womp womp', error);
         throw error;
       })
     );
