@@ -12,12 +12,12 @@ export const routes: Routes = [
   {
     path: 'login',
     component: LoginComponent,
-    // canActivate: [LoginGuard],
+    canActivate: [LoginGuard],
   },
   {
     path: 'register',
     component: RegisterComponent,
-    // canActivate: [LoginGuard],
+    canActivate: [LoginGuard],
   },
   {
     path: '',
@@ -49,6 +49,7 @@ export const routes: Routes = [
   },
   {
     path: '**',
-    redirectTo: 'home',
+    redirectTo: 'dashboar' +
+      '',
   },
 ];

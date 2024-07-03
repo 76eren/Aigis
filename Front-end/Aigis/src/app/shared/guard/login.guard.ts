@@ -11,12 +11,11 @@ export const LoginGuard: () => Observable<boolean> = () => {
   return authService.isAuthenticated().pipe(
     take(1),
     map(isAuthenticated => {
-      if (isAuthenticated) {
-        router.navigate(['/dashboard']);
+      if (!isAuthenticated) {
         return true;
       }
       else {
-        router.navigate(['/login']);
+        router.navigate(['/dashboard']);
         return false;
       }
     })
