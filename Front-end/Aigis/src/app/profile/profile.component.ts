@@ -11,6 +11,8 @@ import {LucideAngularModule} from "lucide-angular";
 import {FormsModule} from "@angular/forms";
 import {UserEditModel} from "../models/user-edit.model";
 import {ToastrService} from "ngx-toastr";
+import {UserService} from "../shared/service/requests/user.service";
+import {HttpResponse} from "@angular/common/http";
 @Component({
   selector: 'app-profile',
   standalone: true,
@@ -39,17 +41,32 @@ export class ProfileComponent {
   @ViewChild('docpicker') docpicker!: ElementRef;
 
 
-  constructor(private apiService: ApiService, private route: ActivatedRoute, private authService: AuthService, private router: Router, private toastr: ToastrService) {}
+  constructor(private apiService: ApiService,
+              private route: ActivatedRoute,
+              private authService: AuthService,
+              private router: Router,
+              private toastr: ToastrService,
+              private userService: UserService
+  ) {}
 
   ngOnInit() {
     this.routeSub = this.route.params.subscribe(params => {
       this.id = params['usernameUnique'];
     });
 
+    this.userService.getCurrentSignedInUser().subscribe((user) => {
+      this.userSelf = user;
+    });
+
     if (this.id == undefined) {
       // This means that the user is trying to view their own profile
       this.isViewingOwnProfile = true;
-      this.id = this.authService.getId();
+
+      // TODO: This doesn't need to be a sepearate request
+      this.userService.getCurrentSignedInUser().subscribe((user) => {
+        this.id = user.usernameUnique;
+      });
+
     }
     else {
       this.isViewingOwnProfile = false;
@@ -76,8 +93,7 @@ export class ProfileComponent {
 
       // If the user is not viewing their own profile, we need to check if they are following the user
       if (!this.isViewingOwnProfile) {
-        this.userSelf = await lastValueFrom(this.apiService.GetUserById(this.authService.getId()));
-        this.userSelf.following?.forEach((user) => {
+        this.userSelf!.following?.forEach((user) => {
           if (this.user?.usernameUnique! == user.usernameUnique) {
             this.isFollowing = true;
           }
@@ -122,10 +138,8 @@ export class ProfileComponent {
         about: this.bio
       }
 
-      this.apiService.UpdateUser(this.user?.id!, userEdit).subscribe((data) => {
-        if (data.status == 200) {
-          location.reload();
-        }
+      this.apiService.UpdateUser(this.user?.id!, userEdit).subscribe((response) => {
+        location.reload();
       });
     }
 

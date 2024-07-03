@@ -10,7 +10,6 @@ import org.example.aigis.Dao.PostDao;
 import org.example.aigis.Dao.UserDAO;
 import org.example.aigis.Mapper.PostMapper;
 import org.example.aigis.Model.*;
-import org.example.aigis.Service.UserVerification;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
@@ -24,7 +23,6 @@ import java.util.*;
 @RequiredArgsConstructor
 public class PostController {
     private final PostDao postDao;
-    private final UserVerification userVerification;
     private final UserDAO userDAO;
     private final PostMapper postMapper;
     private final ImageDao imageDao;
@@ -33,8 +31,7 @@ public class PostController {
     public ApiResponse<PostCreateDTO> createPost(
             @PathVariable String usernameUnique,
             @RequestParam("post") String postCreateDTOStr,
-            @RequestParam(value = "image", required = false) MultipartFile multipartFile,
-            Authentication authentication) throws IOException {
+            @RequestParam(value = "image", required = false) MultipartFile multipartFile) throws IOException {
 
         PostCreateDTO postCreateDTO = new ObjectMapper().readValue(postCreateDTOStr, PostCreateDTO.class);
         Optional<User> user = this.userDAO.findByUsernameUnique(usernameUnique);
@@ -42,9 +39,6 @@ public class PostController {
             return new ApiResponse<>(null, "User not found", HttpStatus.NOT_FOUND);
         }
 
-        if (!userVerification.verifyUser(authentication, usernameUnique)) {
-            return new ApiResponse<>(null, "Error", HttpStatus.BAD_REQUEST);
-        }
 
         Image image = null;
         if (multipartFile != null) {
@@ -81,15 +75,12 @@ public class PostController {
     }
 
     @DeleteMapping(value = "/delete/{id}")
-    public ApiResponse<?> deletePost(@PathVariable String id, Authentication authentication) {
+    public ApiResponse<?> deletePost(@PathVariable String id) {
         Optional<Post> post = this.postDao.findById(UUID.fromString(id));
         if (post.isEmpty()) {
             return new ApiResponse<>(null, "Post not found", HttpStatus.NOT_FOUND);
         }
 
-        if (!userVerification.verifyUser(authentication, post.get().getUser().getUsernameUnique())) {
-            return new ApiResponse<>(null, "Error", HttpStatus.BAD_REQUEST);
-        }
 
         postDao.deletePost(post.get());
         return new ApiResponse<>(null, "Post deleted", HttpStatus.OK);

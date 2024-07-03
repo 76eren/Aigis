@@ -4,6 +4,7 @@ import {FormsModule} from "@angular/forms";
 import {Router} from "@angular/router";
 import {ToastrService} from "ngx-toastr";
 import {ApiService} from "../shared/service/api.service";
+import {LoginService} from "../shared/service/requests/login.service";
 
 @Component({
   selector: 'app-login',
@@ -19,20 +20,26 @@ export class LoginComponent {
   constructor(
     private router: Router,
     private toastr: ToastrService,
-    private apiService: ApiService) {}
+    private apiService: ApiService,
+    private loginService: LoginService) {}
+
+  // public submitLogin() {
+  //   this.apiService
+  //     .PostLogin({ usernameUnique: this.username, password: this.password })
+  //     .subscribe({
+  //       next: (data) => {
+  //         this.toastr.success('Login successful', 'Success');
+  //         this.router.navigate(['/dashboard']);
+  //       },
+  //       error: (error) => {
+  //         console.error(error);
+  //         this.toastr.error('Invalid username or password', 'Error');
+  //       },
+  //     });
+  // }
 
   public submitLogin() {
-    this.apiService
-      .PostLogin({ usernameUnique: this.username, password: this.password })
-      .subscribe({
-        next: (data) => {
-          this.toastr.success('Login successful', 'Success');
-          this.router.navigate(['/dashboard']);
-        },
-        error: (error) => {
-          console.error(error);
-          this.toastr.error('Invalid username or password', 'Error');
-        },
-      });
+    this.loginService.login(this.username, this.password);
   }
+
 }

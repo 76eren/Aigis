@@ -9,6 +9,7 @@ import {Toast, ToastrService} from "ngx-toastr";
 import {catchError, lastValueFrom} from "rxjs";
 import {PostModel} from "../models/post.model";
 import {PostComponent} from "../profile/post/post.component";
+import {UserService} from "../shared/service/requests/user.service";
 
 
 @Component({
@@ -28,7 +29,7 @@ export class DashboardComponent {
   public posts: PostModel[] = [];
   public users: UserSimplifiedModel[] = [];
 
-  constructor(private apiService: ApiService, private authService: AuthService, private toastr: ToastrService) {}
+  constructor(private apiService: ApiService, private authService: AuthService, private toastr: ToastrService, private userService: UserService) {}
 
   ngOnInit() {
     this.SearchForUser().then(() => {
@@ -37,7 +38,9 @@ export class DashboardComponent {
   }
 
   async SearchForUser() {
-    this.user = await lastValueFrom(this.apiService.GetUserById(this.authService.getId()));
+    this.userService.getCurrentSignedInUser().subscribe((user: UserModel) => {
+      this.user = user;
+    });
   }
 
 
@@ -71,12 +74,10 @@ export class DashboardComponent {
           }
           throw error;
         })
-      ).subscribe((data) => {
-        if (data.status == 201) {
-          this.toastr.success('Post created successfully', 'Success');
-          this.text = "";
-          this.fileInput.nativeElement.value = "";
-        }
+      ).subscribe(() => {
+        this.toastr.success('Post created successfully', 'Success');
+        this.text = "";
+        this.fileInput.nativeElement.value = "";
       });
     }
   }
