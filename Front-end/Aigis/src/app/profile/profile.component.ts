@@ -4,12 +4,12 @@ import {ApiService} from "../shared/service/api.service";
 import {ActivatedRoute, Router} from "@angular/router";
 import {lastValueFrom, Subscription} from "rxjs";
 import {AuthService} from "../shared/service/auth.service";
-import {UserModel} from "../models/user.model";
-import {PostModel} from "../models/post.model";
+import {UserModel} from "../shared/models/user.model";
+import {PostModel} from "../shared/models/post.model";
 import {PostComponent} from "./post/post.component";
 import {LucideAngularModule} from "lucide-angular";
 import {FormsModule} from "@angular/forms";
-import {UserEditModel} from "../models/user-edit.model";
+import {UserEditModel} from "../shared/models/user-edit.model";
 import {ToastrService} from "ngx-toastr";
 import {UserService} from "../shared/service/requests/user.service";
 import {HttpResponse} from "@angular/common/http";
@@ -80,14 +80,14 @@ export class ProfileComponent {
 
     try {
       const user = await lastValueFrom(this.userService.GetUserById(this.id));
-      this.user = user;
-      this.username = user.username;
-      this.bio = user.about;
-      this.profilePicture = user.profilePictureId
-        ? this.imageService.GetImage(user.profilePictureId)
+      this.user = user.payload;
+      this.username = this.user.username;
+      this.bio = this.user.about;
+      this.profilePicture = this.user.profilePictureId
+        ? this.imageService.GetImage(this.user.profilePictureId)
         : "../../assets/default-pfp.jpg";
 
-      this.posts = await lastValueFrom(this.postService.GetPostsByUserId(user.usernameUnique));
+      this.posts = await lastValueFrom(this.postService.GetPostsByUserId(this.user.usernameUnique));
 
       // If the user is not viewing their own profile, we need to check if they are following the user
       if (!this.isViewingOwnProfile) {

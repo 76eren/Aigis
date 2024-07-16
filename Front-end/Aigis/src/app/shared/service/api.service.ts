@@ -4,9 +4,9 @@ import { Observable, OperatorFunction } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
 import { z } from 'zod';
 import { AuthService } from './auth.service';
-import {UserModel} from "../../models/user.model";
-import {PostModel} from "../../models/post.model";
-import {UserEditModel} from "../../models/user-edit.model";
+import {UserModel} from "../models/user.model";
+import {PostModel} from "../models/post.model";
+import {UserEditModel} from "../models/user-edit.model";
 
 
 @Injectable({

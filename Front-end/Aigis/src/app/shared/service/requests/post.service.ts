@@ -2,9 +2,9 @@ import {Injectable} from "@angular/core";
 import {ApiService} from "../api.service";
 import {ToastrService} from "ngx-toastr";
 import {catchError, Observable} from "rxjs";
-import {UserModel} from "../../../models/user.model";
+import {UserModel} from "../../models/user.model";
 import {ApiResponse} from "../auth.service";
-import {PostModel} from "../../../models/post.model";
+import {PostModel} from "../../models/post.model";
 import {map} from "rxjs/operators";
 import {z} from "zod";
 

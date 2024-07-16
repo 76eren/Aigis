@@ -1,7 +1,7 @@
 import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import {PostModel} from "../../models/post.model";
-import {UserModel, UserSimplifiedModel} from "../../models/user.model";
+import {PostModel} from "../../shared/models/post.model";
+import {UserModel, UserSimplifiedModel} from "../../shared/models/user.model";
 import { DatePipe } from '@angular/common';
 import {ApiService} from "../../shared/service/api.service";
 import {ImageService} from "../../shared/service/requests/image.service";
