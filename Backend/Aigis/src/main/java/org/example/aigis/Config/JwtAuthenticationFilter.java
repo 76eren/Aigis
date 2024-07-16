@@ -1,6 +1,7 @@
 package org.example.aigis.Config;
 
 
+import jakarta.servlet.http.Cookie;
 import org.example.aigis.Dao.UserDAO;
 import org.example.aigis.Service.JwtService;
 import org.example.aigis.Model.User;
@@ -30,37 +31,44 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull FilterChain filterChain) throws ServletException, IOException {
-        final String authHeader = request.getHeader("Authorization");
-        final String jwt;
-        final String userId;
+        String jwt = null;
+        Cookie[] cookies = request.getCookies();
+        if (cookies != null) {
+            for (Cookie cookie : cookies) {
+                if ("token".equals(cookie.getName())) {
+                    jwt = cookie.getValue();
+                    break;
+                }
+            }
+        }
 
-        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+        if (jwt == null) {
             filterChain.doFilter(request, response);
             return;
         }
 
-        jwt = authHeader.substring(7);
-        userId = jwtService.extractUserId(jwt);
+        try {
+            final String userId = jwtService.extractUserId(jwt);
+            if (userId == null || SecurityContextHolder.getContext().getAuthentication() != null) {
+                filterChain.doFilter(request, response);
+                return;
+            }
 
-        if (userId == null || SecurityContextHolder.getContext().getAuthentication() != null) {
-            filterChain.doFilter(request, response);
-            return;
+            Optional<User> user = userDAO.findById(UUID.fromString(userId));
+            if (user.isEmpty() || !jwtService.isTokenValid(jwt, user.get().getId())) {
+                filterChain.doFilter(request, response);
+                return;
+            }
+
+            UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
+                    user.get().getId(), null, user.get().getAuthorities());
+            authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+            SecurityContextHolder.getContext().setAuthentication(authToken);
         }
+        // I added this empty catch block so the doFilterInternal doesn't throw an error and the /authenticated endpoint can be called with an invalid token
+        catch (io.jsonwebtoken.ExpiredJwtException e) {
 
-        Optional<User> user = userDAO.findById(UUID.fromString(userId));
-        if (user.isEmpty()) {
-            filterChain.doFilter(request, response);
-            return;
         }
-
-        if (!jwtService.isTokenValid(jwt, user.get().getId())) {
-            filterChain.doFilter(request, response);
-            return;
-        }
-
-        UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(user.get().getUsernameUnique(), null, user.get().getAuthorities());
-        authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-        SecurityContextHolder.getContext().setAuthentication(authToken);
 
         filterChain.doFilter(request, response);
     }

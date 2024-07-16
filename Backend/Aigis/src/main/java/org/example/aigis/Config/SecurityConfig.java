@@ -25,13 +25,13 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableWebSecurity
 @EnableMethodSecurity
 @RequiredArgsConstructor
-public class SpringConfig {
+public class SecurityConfig {
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
     private final UserDAO userDAO;
 
     @Bean
     public Logger logger() {
-        return LoggerFactory.getLogger(SpringConfig.class);
+        return LoggerFactory.getLogger(SecurityConfig.class);
     }
 
     @Bean

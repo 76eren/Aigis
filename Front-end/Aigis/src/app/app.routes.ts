@@ -2,31 +2,31 @@ import { Routes } from '@angular/router';
 import {DashboardComponent} from "./dashboard/dashboard.component";
 import {AppLayoutComponent} from "./app-layout/app-layout.component";
 import {LoginComponent} from "./login/login.component";
-import {loginGuard} from "./shared/guard/login.guard";
 import {RegisterComponent} from "./register/register.component";
 import {ProfileComponent} from "./profile/profile.component";
-import {NotLoginGuard} from "./shared/guard/not-login.guard";
 import {SearchForUserComponent} from "./search-for-user/search-for-user.component";
+import {AuthGuard} from "./shared/guard/auth.guard";
+import {LoginGuard} from "./shared/guard/login.guard";
 
 export const routes: Routes = [
   {
     path: 'login',
     component: LoginComponent,
-    canActivate: [loginGuard],
+    canActivate: [LoginGuard],
   },
   {
     path: 'register',
     component: RegisterComponent,
-    canActivate: [loginGuard],
+    canActivate: [LoginGuard],
   },
   {
     path: '',
     component: AppLayoutComponent,
+    canActivate: [AuthGuard],
     children: [
       {
         path: 'dashboard',
         component: DashboardComponent,
-        canActivate: [NotLoginGuard]
       },
       {
         path: '',
@@ -36,18 +36,20 @@ export const routes: Routes = [
       {
         path: 'profile/:usernameUnique',
         component: ProfileComponent,
-        canActivate: [NotLoginGuard]
       },
       {
         path: 'profile',
         component: ProfileComponent,
-        canActivate: [NotLoginGuard]
       },
       {
         path: 'search',
         component: SearchForUserComponent,
-        canActivate: [NotLoginGuard]
       }
     ],
+  },
+  {
+    path: '**',
+    redirectTo: 'dashboard' +
+      '',
   },
 ];

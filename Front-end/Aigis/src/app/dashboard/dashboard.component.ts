@@ -9,6 +9,7 @@ import {Toast, ToastrService} from "ngx-toastr";
 import {catchError, lastValueFrom} from "rxjs";
 import {PostModel} from "../models/post.model";
 import {PostComponent} from "../profile/post/post.component";
+import {UserService} from "../shared/service/requests/user.service";
 
 
 @Component({
@@ -28,16 +29,24 @@ export class DashboardComponent {
   public posts: PostModel[] = [];
   public users: UserSimplifiedModel[] = [];
 
-  constructor(private apiService: ApiService, private authService: AuthService, private toastr: ToastrService) {}
+  constructor(
+    private apiService: ApiService,
+    private authService: AuthService,
+    private toastr: ToastrService,
+    private userService: UserService
+
+  ) {}
 
   ngOnInit() {
-    this.SearchForUser().then(() => {
-      this.loadPosts();
-    });
+    this.SearchForUser();
   }
 
-  async SearchForUser() {
-    this.user = await lastValueFrom(this.apiService.GetUserById(this.authService.getId()));
+  SearchForUser() {
+    this.userService.getCurrentSignedInUser().subscribe((response) => {
+      this.user = response.payload;
+      this.loadPosts();
+    });
+
   }
 
 
@@ -64,19 +73,18 @@ export class DashboardComponent {
         file = this.fileInput.nativeElement.files[0];
       }
 
+      console.log(this.user)
+      console.log("Username unique is: " + this.user?.usernameUnique)
+
       this.apiService.CreatePost(this.user!.usernameUnique, this.text!, file).pipe(
         catchError((error: any) => {
-          if (error.status === 403) {
             this.toastr.error('Post could not be created', 'Error');
-          }
           throw error;
         })
-      ).subscribe((data) => {
-        if (data.status == 201) {
-          this.toastr.success('Post created successfully', 'Success');
-          this.text = "";
-          this.fileInput.nativeElement.value = "";
-        }
+      ).subscribe(() => {
+        this.toastr.success('Post created successfully', 'Success');
+        this.text = "";
+        this.fileInput.nativeElement.value = "";
       });
     }
   }

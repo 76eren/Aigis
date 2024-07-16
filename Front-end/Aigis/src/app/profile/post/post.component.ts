@@ -26,7 +26,8 @@ export class PostComponent {
   ngOnInit() {
     if (this.post?.imageId && this.post?.imageId !== '') {
       this.imageUrl = this.apiService.GetImage(this.post?.imageId!);
-    } else {
+    }
+    else {
       this.hasImage = false;
     }
 

@@ -2,104 +2,91 @@ import {Injectable} from "@angular/core";
 import {ToastrService} from "ngx-toastr";
 import {Router} from "@angular/router";
 import {HttpClient} from "@angular/common/http";
+import { map, catchError } from 'rxjs/operators';
+import { of, Observable } from 'rxjs';
 import {ApiService} from "./api.service";
+import {UserModel} from "../../models/user.model";
+
+export interface ApiResponse<T> {
+  payload: T;
+  message: string;
+  statusCode: string;
+}
+
+export interface ApiResponse<T> {
+  payload: T;
+  message: string;
+  statusCode: string;
+}
 
 @Injectable()
 export class AuthService {
-  constructor(private toastr: ToastrService, private router: Router, private http: HttpClient) {}
+  constructor(private toastr: ToastrService, private router: Router, private http: HttpClient, private apiService: ApiService) {}
 
 
-  parseToken = (token: string) => {
-    const base64Url = token.split('.')[1];
-    const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-    const jsonPayload = decodeURIComponent(atob(base64));
+  public isIdOfLoggedInUser(id: string): Observable<boolean> {
+    let endpoint = '/auth/checkId/' + id;
 
-    return JSON.parse(jsonPayload);
-  };
-
-  public isAuthenticated(): boolean {
-    const token = sessionStorage.getItem('token');
-    if (!token) return false;
-
-    return true;
-  }
-
-  public isAdmin(): boolean {
-    const token = sessionStorage.getItem('token');
-    if (!token) return false;
-
-    const claims = this.parseToken(token);
-    if (claims.role !== 'ADMIN' && claims.role !== 'ADMIN') return false;
-
-    return true;
-  }
-
-  public setToken(token: string): void {
-    sessionStorage.setItem('token', token);
-  }
-
-  public getToken() {
-    return sessionStorage.getItem('token');
-  }
-
-  public validateToken(): void {
-    let isValid = false;
-    const token = sessionStorage.getItem('token');
-    if (!token) return;
-
-    this.http.get(ApiService.API_URL + `/auth/validate/${token}`, {observe: 'response', responseType : 'text'}).subscribe(
-      response => {
-        const responseBody = response.body ? response.body.toString() : '';
-        if (responseBody.includes('invalid')) {
-          isValid = false;
-        }
-        else if (responseBody.includes("valid")) {
-          isValid = true;
+    return this.apiService.get<any>(endpoint)
+      .pipe(map(response => {
+        if (response.payload && response.payload.idOfSelf) {
+          return true;
         }
         else {
-          isValid = false;
+          return false;
         }
-
-        if (!isValid) {
-          sessionStorage.removeItem('token');
-          this.toastr.error('Your session has expired or is invalid. Please log in again.', 'Session Expired');
-          this.router.navigate(['/login']);
-        }
-
-      },
-    );
+      }));
   }
 
-  public isLoggedIn(): boolean {
-    const token = sessionStorage.getItem('token');
-    return !!token;
+
+  public isAuthenticated(): Observable<boolean> {
+    let endpoint = '/auth/authenticated';
+
+    return this.apiService.get<any>(endpoint)
+      .pipe(
+        map(response => {
+          if (response.payload && response.payload.authenticated) { // TODO: validate response payload
+            return true;
+          }
+          else {
+            return false;
+          }
+        }),
+        catchError(error => {
+          return of(false);
+        })
+      );
+  }
+
+  public isAdmin(): Observable<boolean> {
+    let endpoint = '/auth/isAdmin';
+
+    return this.apiService.get<any>(endpoint)
+      .pipe(
+        map(response => {
+          if (response.payload && response.payload.admin) {
+            return true;
+          }
+          else {
+            return false;
+          }
+        }),
+        catchError(error => {
+          return of(false);
+        })
+      );
   }
 
   public signout(): void {
-    sessionStorage.removeItem('token');
-    this.router.navigate(['/login']);
-  }
-
-  public getId() {
-    const token = sessionStorage.getItem('token');
-    if (!token) return '';
-
-    try {
-      // Split the token into parts
-      const parts = token.split('.');
-      if (parts.length !== 3) {
-        throw new Error('Invalid JWT token');
-      }
-      const payload = parts[1];
-      const decodedPayload = atob(payload.replace(/-/g, '+').replace(/_/g, '/'));
-      const payloadObj = JSON.parse(decodedPayload);
-      return payloadObj.sub;
-    }
-    catch (error) {
-      console.error('Failed to decode JWT:', error);
-      return null;
-    }
-
+    this.apiService.post<any>('/auth/logout')
+      .subscribe({
+        next: () => {
+          this.router.navigate(['/login']);
+        },
+        error: (error) => {
+          this.toastr.error('Er is iets misgegaan tijdens het uitloggen. \nProbeer het opnieuw.');
+        }
+      });
   }
 
 }

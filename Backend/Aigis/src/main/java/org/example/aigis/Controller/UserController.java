@@ -14,10 +14,10 @@ import org.example.aigis.Mapper.UserMapper;
 import org.example.aigis.Model.ApiResponse;
 import org.example.aigis.Model.User;
 import lombok.RequiredArgsConstructor;
-import org.example.aigis.Service.UserVerification;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -33,7 +33,6 @@ public class UserController {
     private final UserDAO userDAO;
     private final UserMapper userMapper;
     private final AuthenticationService authenticationService;
-    private final UserVerification userVerification;
     private final ImageDao imageDao;
 
     @PreAuthorize("hasAuthority('ADMIN')")
@@ -99,9 +98,6 @@ public class UserController {
             return new ApiResponse<>("User not found", HttpStatus.NOT_FOUND);
         }
 
-        if (!userVerification.verifyUser(authentication, user.get().getUsernameUnique())) {
-            return new ApiResponse<>("You are not authorized to edit this user", HttpStatus.UNAUTHORIZED);
-        }
 
         for (SupportedExtensions i : SupportedExtensions.values()) {
             if (i.getExtension().substring(1).equalsIgnoreCase(imageExtention)) {
@@ -118,8 +114,7 @@ public class UserController {
     @PutMapping(path = {"/{id}"})
     public ApiResponse<UserResponseDTO> editUser(
             @PathVariable("id") UUID id,
-            @RequestBody UserEditDTO userEditDTO,
-            Authentication authentication
+            @RequestBody UserEditDTO userEditDTO
     ) {
         Optional<User> foundUser = userDAO.findById(id);
         if(foundUser.isEmpty()) {
@@ -128,9 +123,6 @@ public class UserController {
 
         User user = foundUser.get();
 
-        if (!userVerification.verifyUser(authentication, user.getUsernameUnique())) {
-            return new ApiResponse<>("You are not authorized to edit this user", HttpStatus.UNAUTHORIZED);
-        }
 
         if (userEditDTO.getUsername() != null) {
             user.setUsername(userEditDTO.getUsername());
@@ -164,11 +156,25 @@ public class UserController {
 
     @PatchMapping(value = "/follow/{usernameUnique}")
     public ApiResponse<UserResponseDTO> followUser(
-            @PathVariable String usernameUnique,
-            Authentication authentication
-    ) {
-        User user = userDAO.findByUsernameUnique(authentication.getName()).get();
+            @PathVariable String usernameUnique) {
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if(authentication.getPrincipal().toString().isEmpty()){
+            return new ApiResponse<>("User not found", HttpStatus.NOT_FOUND);
+        }
+
+        User user = userDAO.findById(UUID.fromString(authentication.getName())).get();
+
         return this.userDAO.followUser(user, usernameUnique);
+    }
+
+    @GetMapping(path = {"/me"})
+    public ApiResponse<UserResponseDTO> getMe() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if(authentication.getPrincipal().toString().isEmpty()){
+            return new ApiResponse<>("User not found", HttpStatus.NOT_FOUND);
+        }
+        return new ApiResponse<>(userMapper.fromEntity(userDAO.findById(UUID.fromString(authentication.getPrincipal().toString())).orElseThrow()));
     }
 }
 
