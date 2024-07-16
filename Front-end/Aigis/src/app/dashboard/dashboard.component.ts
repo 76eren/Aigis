@@ -2,7 +2,7 @@ import {Component, ElementRef, ViewChild} from '@angular/core';
 import {CommonModule} from '@angular/common';
 import {ApiService} from "../shared/service/api.service";
 import {UserModel, UserSimplifiedModel} from "../shared/models/user.model";
-import {AuthService} from "../shared/service/auth.service";
+import {ApiResponse, AuthService} from "../shared/service/auth.service";
 import {LucideAngularModule} from "lucide-angular";
 import {FormsModule} from "@angular/forms";
 import {Toast, ToastrService} from "ngx-toastr";
@@ -54,10 +54,10 @@ export class DashboardComponent {
 
   loadPosts() {
     this.user?.following?.forEach((user: UserSimplifiedModel) => {
-      this.postService.GetPostsByUserId(user.usernameUnique).subscribe((posts: PostModel[]) => {
-        if (posts.length != 0) {
-          this.posts.push(...posts)
-          for (let post of posts) {
+      this.postService.GetPostsByUserId(user.usernameUnique).subscribe((posts: ApiResponse<PostModel[]>) => {
+        if (posts.payload.length != 0) {
+          this.posts.push(...posts.payload)
+          for (let post of posts.payload) {
             this.users.push(user)
           }
         }

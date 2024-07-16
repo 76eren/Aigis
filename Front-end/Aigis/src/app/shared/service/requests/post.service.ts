@@ -28,31 +28,8 @@ export class PostService {
     return this.apiService.post(`/post/create/${userId}`, { body: formData});
   }
 
-  public GetPostsByUserId(id: string): Observable<PostModel[]> {
-    return this.apiService.get<any>(`/post/${id}`, {}).pipe(
-      map(response => {
-        return response.payload.map((post: any) => {
-          return z
-            .object({
-              id: z.string(),
-              content: z.string(),
-              likes: z.number(),
-              date: z.number(),
-              imageId: z.string().nullable(),
-            })
-            .parse(post);
-        });
-      }),
-      map((data: any[]) => {
-        return data.map((post: any) => new PostModel(
-          post.id,
-          post.content,
-          post.likes,
-          post.date,
-          post.imageId || ''
-        ));
-      })
-    );
+  public GetPostsByUserId(id: string): Observable<ApiResponse<PostModel[]>> {
+    return this.apiService.get<ApiResponse<PostModel[]>>(`/post/${id}`, {});
   }
 
 

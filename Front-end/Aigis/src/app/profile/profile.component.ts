@@ -87,7 +87,8 @@ export class ProfileComponent {
         ? this.imageService.GetImage(this.user.profilePictureId)
         : "../../assets/default-pfp.jpg";
 
-      this.posts = await lastValueFrom(this.postService.GetPostsByUserId(this.user.usernameUnique));
+      let postsApiresonse = await lastValueFrom(this.postService.GetPostsByUserId(this.user.usernameUnique));
+      this.posts = postsApiresonse.payload;
 
       // If the user is not viewing their own profile, we need to check if they are following the user
       if (!this.isViewingOwnProfile) {
