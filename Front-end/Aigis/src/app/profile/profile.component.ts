@@ -43,8 +43,6 @@ export class ProfileComponent {
 
   constructor(private apiService: ApiService,
               private route: ActivatedRoute,
-              private authService: AuthService,
-              private router: Router,
               private toastr: ToastrService,
               private userService: UserService
   ) {}
@@ -52,29 +50,23 @@ export class ProfileComponent {
   ngOnInit() {
     this.routeSub = this.route.params.subscribe(params => {
       this.id = params['usernameUnique'];
-    });
 
-
-
-    this.userService.getCurrentSignedInUser().subscribe((user) => {
-      this.userSelf = user.payload;
-    });
-
-    if (this.id == undefined) {
-      // This means that the user is trying to view their own profile
-      this.isViewingOwnProfile = true;
-
-      // TODO: This doesn't need to be a sepearate request
       this.userService.getCurrentSignedInUser().subscribe((user) => {
-        this.id = user.payload.usernameUnique;
+        this.userSelf = user.payload;
+
+        if (this.id == undefined) {
+          this.isViewingOwnProfile = true;
+          this.id = this.userSelf?.usernameUnique;
+        }
+        else {
+          this.isViewingOwnProfile = false;
+        }
+
+        this.searchForUser();
+
       });
+    });
 
-    }
-    else {
-      this.isViewingOwnProfile = false;
-    }
-
-    this.searchForUser();
   }
 
   public async searchForUser() {

@@ -114,8 +114,7 @@ public class UserController {
     @PutMapping(path = {"/{id}"})
     public ApiResponse<UserResponseDTO> editUser(
             @PathVariable("id") UUID id,
-            @RequestBody UserEditDTO userEditDTO,
-            Authentication authentication
+            @RequestBody UserEditDTO userEditDTO
     ) {
         Optional<User> foundUser = userDAO.findById(id);
         if(foundUser.isEmpty()) {
@@ -157,10 +156,15 @@ public class UserController {
 
     @PatchMapping(value = "/follow/{usernameUnique}")
     public ApiResponse<UserResponseDTO> followUser(
-            @PathVariable String usernameUnique,
-            Authentication authentication
-    ) {
-        User user = userDAO.findByUsernameUnique(authentication.getName()).get();
+            @PathVariable String usernameUnique) {
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if(authentication.getPrincipal().toString().isEmpty()){
+            return new ApiResponse<>("User not found", HttpStatus.NOT_FOUND);
+        }
+
+        User user = userDAO.findById(UUID.fromString(authentication.getName())).get();
+
         return this.userDAO.followUser(user, usernameUnique);
     }
 
