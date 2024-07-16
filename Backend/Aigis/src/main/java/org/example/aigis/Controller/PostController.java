@@ -10,6 +10,7 @@ import org.example.aigis.Dao.PostDao;
 import org.example.aigis.Dao.UserDAO;
 import org.example.aigis.Mapper.PostMapper;
 import org.example.aigis.Model.*;
+import org.example.aigis.Service.PostService;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
@@ -24,8 +25,7 @@ import java.util.*;
 public class PostController {
     private final PostDao postDao;
     private final UserDAO userDAO;
-    private final PostMapper postMapper;
-    private final ImageDao imageDao;
+    private final PostService postService;
 
     @PostMapping(value = "/create/{usernameUnique}", consumes = "multipart/form-data")
     public ApiResponse<PostCreateDTO> createPost(
@@ -33,24 +33,15 @@ public class PostController {
             @RequestParam("post") String postCreateDTOStr,
             @RequestParam(value = "image", required = false) MultipartFile multipartFile) throws IOException {
 
-        PostCreateDTO postCreateDTO = new ObjectMapper().readValue(postCreateDTOStr, PostCreateDTO.class);
         Optional<User> user = this.userDAO.findByUsernameUnique(usernameUnique);
         if (user.isEmpty()) {
             return new ApiResponse<>(null, "User not found", HttpStatus.NOT_FOUND);
         }
 
+        PostService.PostData postData = this.postService.createPost(multipartFile, postCreateDTOStr, usernameUnique);
 
-        Image image = null;
-        if (multipartFile != null) {
-            String extention = multipartFile.getOriginalFilename().split("\\.")[1];
-            for (SupportedExtensions i : SupportedExtensions.values()) {
-                if (i.getExtension().substring(1).equalsIgnoreCase(extention)) {
-                    image = imageDao.saveImage(multipartFile, i);
-                    break;
-                }
-            }
-        }
-        return postDao.createPost(String.valueOf(user.get().getId()), postCreateDTO, image);
+
+        return postDao.createPost(String.valueOf(user.get().getId()), postData.getPostCreateDTO(), postData.getImage());
     }
 
     @GetMapping(value = "/{usernameUnique}")
@@ -60,18 +51,7 @@ public class PostController {
             return new ApiResponse<>(null, "User not found", HttpStatus.NOT_FOUND);
         }
 
-        List<Post> posts = user.get().getPosts();
-        List<PostGetDTO> postsGet = new ArrayList<>();
-        for (Post post : posts) {
-            postsGet.add(postMapper.fromEntityToPostGetDto(post));
-        }
-
-        // Sort the post by date going up
-        // TODO: Sort this inside of the database instead of runtime
-        postsGet.sort(Comparator.comparing(PostGetDTO::getDate));
-
-
-        return new ApiResponse<>(postsGet, "Posts", HttpStatus.OK);
+        return new ApiResponse<>(this.postService.getPostsFromUser(user), "Posts", HttpStatus.OK);
     }
 
     @DeleteMapping(value = "/delete/{id}")
