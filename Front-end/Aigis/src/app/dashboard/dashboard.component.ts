@@ -10,6 +10,7 @@ import {catchError, lastValueFrom} from "rxjs";
 import {PostModel} from "../models/post.model";
 import {PostComponent} from "../profile/post/post.component";
 import {UserService} from "../shared/service/requests/user.service";
+import {PostService} from "../shared/service/requests/post.service";
 
 
 @Component({
@@ -31,6 +32,7 @@ export class DashboardComponent {
 
   constructor(
     private apiService: ApiService,
+    private postService: PostService,
     private authService: AuthService,
     private toastr: ToastrService,
     private userService: UserService
@@ -52,7 +54,7 @@ export class DashboardComponent {
 
   loadPosts() {
     this.user?.following?.forEach((user: UserSimplifiedModel) => {
-      this.apiService.GetPostsByUserId(user.usernameUnique).subscribe((posts: PostModel[]) => {
+      this.postService.GetPostsByUserId(user.usernameUnique).subscribe((posts: PostModel[]) => {
         if (posts.length != 0) {
           this.posts.push(...posts)
           for (let post of posts) {
@@ -76,7 +78,7 @@ export class DashboardComponent {
       console.log(this.user)
       console.log("Username unique is: " + this.user?.usernameUnique)
 
-      this.apiService.CreatePost(this.user!.usernameUnique, this.text!, file).pipe(
+      this.postService.CreatePost(this.user!.usernameUnique, this.text!, file).pipe(
         catchError((error: any) => {
             this.toastr.error('Post could not be created', 'Error');
           throw error;
