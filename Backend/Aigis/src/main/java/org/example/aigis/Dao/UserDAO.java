@@ -85,4 +85,17 @@ public class UserDAO implements UserDetailsService {
 
         return new ApiResponse<>(this.userMapper.fromEntity(userRepository.save(user)));
     }
+
+    public Optional<User> findByUnkownIdentifier(String userIdentifier) {
+        // We can get the user by both @ and UUID
+        boolean isUUID = false;
+        try{
+            UUID uuid = UUID.fromString(userIdentifier);
+            return this.findById(UUID.fromString(userIdentifier));
+        }
+        catch (IllegalArgumentException ignored) {
+            return this.findByUsernameUnique(userIdentifier);
+        }
+
+    }
 }

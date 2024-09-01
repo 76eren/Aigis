@@ -5,7 +5,7 @@ import {HttpClient} from "@angular/common/http";
 import { map, catchError } from 'rxjs/operators';
 import { of, Observable } from 'rxjs';
 import {ApiService} from "./api.service";
-import {UserModel} from "../../models/user.model";
+import {UserModel} from "../models/user.model";
 
 export interface ApiResponse<T> {
   payload: T;
