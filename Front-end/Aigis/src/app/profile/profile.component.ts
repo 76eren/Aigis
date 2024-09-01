@@ -4,17 +4,15 @@ import {ApiService} from "../shared/service/api.service";
 import {ActivatedRoute, Router} from "@angular/router";
 import {lastValueFrom, Subscription} from "rxjs";
 import {AuthService} from "../shared/service/auth.service";
-import {UserModel} from "../shared/models/user.model";
-import {PostModel} from "../shared/models/post.model";
+import {UserModel} from "../models/user.model";
+import {PostModel} from "../models/post.model";
 import {PostComponent} from "./post/post.component";
 import {LucideAngularModule} from "lucide-angular";
 import {FormsModule} from "@angular/forms";
-import {UserEditModel} from "../shared/models/user-edit.model";
+import {UserEditModel} from "../models/user-edit.model";
 import {ToastrService} from "ngx-toastr";
 import {UserService} from "../shared/service/requests/user.service";
 import {HttpResponse} from "@angular/common/http";
-import {PostService} from "../shared/service/requests/post.service";
-import {ImageService} from "../shared/service/requests/image.service";
 @Component({
   selector: 'app-profile',
   standalone: true,
@@ -46,9 +44,7 @@ export class ProfileComponent {
   constructor(private apiService: ApiService,
               private route: ActivatedRoute,
               private toastr: ToastrService,
-              private userService: UserService,
-              private postService: PostService,
-              private imageService: ImageService
+              private userService: UserService
   ) {}
 
   ngOnInit() {
@@ -79,16 +75,15 @@ export class ProfileComponent {
     }
 
     try {
-      const user = await lastValueFrom(this.userService.GetUserById(this.id));
-      this.user = user.payload;
-      this.username = this.user.username;
-      this.bio = this.user.about;
-      this.profilePicture = this.user.profilePictureId
-        ? this.imageService.GetImage(this.user.profilePictureId)
+      const user = await lastValueFrom(this.apiService.GetUserById(this.id));
+      this.user = user;
+      this.username = user.username;
+      this.bio = user.about;
+      this.profilePicture = user.profilePictureId
+        ? this.apiService.GetImage(user.profilePictureId)
         : "../../assets/default-pfp.jpg";
 
-      let postsApiresonse = await lastValueFrom(this.postService.GetPostsByUserId(this.user.usernameUnique));
-      this.posts = postsApiresonse.payload;
+      this.posts = await lastValueFrom(this.apiService.GetPostsByUserId(user.usernameUnique));
 
       // If the user is not viewing their own profile, we need to check if they are following the user
       if (!this.isViewingOwnProfile) {
@@ -127,7 +122,7 @@ export class ProfileComponent {
         formData.append('image', file, 'image.jpg'); // Uh oh, hard coding an extension
       }
 
-      this.userService.AssignPfp(this.user?.usernameUnique!, formData).subscribe((data) => {
+      this.apiService.AssignPfp(this.user?.usernameUnique!, formData).subscribe((data) => {
       });
     }
 
@@ -137,7 +132,7 @@ export class ProfileComponent {
         about: this.bio
       }
 
-      this.userService.UpdateUser(this.user?.id!, userEdit).subscribe((response) => {
+      this.apiService.UpdateUser(this.user?.id!, userEdit).subscribe((response) => {
         location.reload();
       });
     }
@@ -152,7 +147,7 @@ export class ProfileComponent {
     let initial: boolean = this.isFollowing;
     this.isFollowing = !this.isFollowing;
 
-    this.userService.FollowUser(this.user!).subscribe(
+    this.apiService.FollowUser(this.user!).subscribe(
       (data) => {
         this.toastr.success('User followed/unfollowed', 'Success');
       },

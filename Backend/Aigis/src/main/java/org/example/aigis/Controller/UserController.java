@@ -14,7 +14,6 @@ import org.example.aigis.Mapper.UserMapper;
 import org.example.aigis.Model.ApiResponse;
 import org.example.aigis.Model.User;
 import lombok.RequiredArgsConstructor;
-import org.example.aigis.Service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
@@ -34,7 +33,7 @@ public class UserController {
     private final UserDAO userDAO;
     private final UserMapper userMapper;
     private final AuthenticationService authenticationService;
-    private final UserService userService;
+    private final ImageDao imageDao;
 
     @PreAuthorize("hasAuthority('ADMIN')")
     @GetMapping
@@ -53,7 +52,20 @@ public class UserController {
     public ApiResponse<UserResponseDTO> getUsernameByIdentifier(
             @PathVariable String userIdentifier) {
 
-        Optional<User> user = userDAO.findByUnkownIdentifier(userIdentifier);
+        // We can get the user by both @ and UUID
+        boolean isUUID = false;
+        try{
+            UUID uuid = UUID.fromString(userIdentifier);
+            isUUID = true;
+        } catch (IllegalArgumentException ignored){}
+
+        Optional<User> user;
+        if (isUUID) {
+            user = userDAO.findById(UUID.fromString(userIdentifier));
+        }
+        else {
+            user = userDAO.findByUsernameUnique(userIdentifier);
+        }
 
         if (user.isEmpty()) {
             return new ApiResponse<>("User not found", HttpStatus.NOT_FOUND);
@@ -76,25 +88,29 @@ public class UserController {
     @PatchMapping(value = "/{usernameUnique}")
     public ApiResponse<?> assignProfilePicture(
             @RequestParam(value = "image", required = true) MultipartFile multipartFile,
-            @PathVariable String usernameUnique
-    ) throws IOException {
+            @PathVariable String usernameUnique,
+            Authentication authentication) throws IOException {
 
+        String imageExtention = multipartFile.getOriginalFilename().split("\\.")[1];
 
         Optional<User> user = userDAO.findByUsernameUnique(usernameUnique);
         if (user.isEmpty()) {
             return new ApiResponse<>("User not found", HttpStatus.NOT_FOUND);
         }
 
-        Optional<User> newUser = this.userService.assignProfilePicture(multipartFile, user);
-        if (newUser.isEmpty()) {
-            return new ApiResponse<>("Invalid image", HttpStatus.BAD_REQUEST);
+
+        for (SupportedExtensions i : SupportedExtensions.values()) {
+            if (i.getExtension().substring(1).equalsIgnoreCase(imageExtention)) {
+                Image image = imageDao.saveImage(multipartFile, i);
+                user.get().setProfilePicture(image);
+                userDAO.save(user.get());
+                return new ApiResponse<>("Profile picture updated", HttpStatus.OK);
+            }
         }
 
-        this.userDAO.save(newUser.get());
-        return new ApiResponse<>("Profile picture updated", HttpStatus.OK);
+        return new ApiResponse<>(HttpStatus.NOT_FOUND);
     }
 
-    // TOOD: This is horrible, will rewrite later
     @PutMapping(path = {"/{id}"})
     public ApiResponse<UserResponseDTO> editUser(
             @PathVariable("id") UUID id,
@@ -124,6 +140,7 @@ public class UserController {
             user.setPassword(userEditDTO.getPassword());
         }
 
+        // TODO: Make this a separate API call
         if (userEditDTO.getUsernameUnique() != null) {
             // We check if this usernameUnique already exists
             Optional<User> userWithUsernameUnique = userDAO.findByUsernameUnique(userEditDTO.getUsernameUnique());
