@@ -1,9 +1,9 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
+import {ApiService} from "../shared/service/api.service";
 import {ToastrService} from "ngx-toastr";
 import {Router} from "@angular/router";
-import {UserService} from "../shared/service/requests/user.service";
 
 @Component({
   selector: 'app-register',
@@ -17,11 +17,11 @@ export class RegisterComponent {
   password: string = "";
   usernameUnique: string = "";
 
-  constructor(private userService: UserService, private toastr: ToastrService, private router: Router) {}
+  constructor(private apiService: ApiService, private toastr: ToastrService, private router: Router) {}
 
   submitRegister() {
-    this.userService
-        .Register({ username: this.username, password: this.password, usernameUnique: this.usernameUnique })
+    this.apiService
+        .PostRegister({ username: this.username, password: this.password, usernameUnique: this.usernameUnique })
         .subscribe({
             next: (data) => {
                 this.toastr.success('Register successful', 'Success');

@@ -1,16 +1,15 @@
 import {Component, ElementRef, ViewChild} from '@angular/core';
 import {CommonModule} from '@angular/common';
 import {ApiService} from "../shared/service/api.service";
-import {UserModel, UserSimplifiedModel} from "../shared/models/user.model";
-import {ApiResponse, AuthService} from "../shared/service/auth.service";
+import {UserModel, UserSimplifiedModel} from "../models/user.model";
+import {AuthService} from "../shared/service/auth.service";
 import {LucideAngularModule} from "lucide-angular";
 import {FormsModule} from "@angular/forms";
 import {Toast, ToastrService} from "ngx-toastr";
 import {catchError, lastValueFrom} from "rxjs";
-import {PostModel} from "../shared/models/post.model";
+import {PostModel} from "../models/post.model";
 import {PostComponent} from "../profile/post/post.component";
 import {UserService} from "../shared/service/requests/user.service";
-import {PostService} from "../shared/service/requests/post.service";
 
 
 @Component({
@@ -32,7 +31,6 @@ export class DashboardComponent {
 
   constructor(
     private apiService: ApiService,
-    private postService: PostService,
     private authService: AuthService,
     private toastr: ToastrService,
     private userService: UserService
@@ -54,10 +52,10 @@ export class DashboardComponent {
 
   loadPosts() {
     this.user?.following?.forEach((user: UserSimplifiedModel) => {
-      this.postService.GetPostsByUserId(user.usernameUnique).subscribe((posts: ApiResponse<PostModel[]>) => {
-        if (posts.payload.length != 0) {
-          this.posts.push(...posts.payload)
-          for (let post of posts.payload) {
+      this.apiService.GetPostsByUserId(user.usernameUnique).subscribe((posts: PostModel[]) => {
+        if (posts.length != 0) {
+          this.posts.push(...posts)
+          for (let post of posts) {
             this.users.push(user)
           }
         }
@@ -78,7 +76,7 @@ export class DashboardComponent {
       console.log(this.user)
       console.log("Username unique is: " + this.user?.usernameUnique)
 
-      this.postService.CreatePost(this.user!.usernameUnique, this.text!, file).pipe(
+      this.apiService.CreatePost(this.user!.usernameUnique, this.text!, file).pipe(
         catchError((error: any) => {
             this.toastr.error('Post could not be created', 'Error');
           throw error;
